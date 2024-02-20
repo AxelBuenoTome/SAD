@@ -9,5 +9,5 @@ Hacer el commit -m "mensaje"
 ## 4) Push
 Subir todo haciendo git push origin nombre_de_la_rama
 # Importante
-Antes de empezar a realizar cambios tenemos que verificar que estamos usando la última versión del archivo
+Antes de empezar a realizar cambios tenemos que verificar que estamos usando la última versión del archivo con: git pull origin nombre_de_la_rama
 
