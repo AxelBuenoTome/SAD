@@ -1,2 +1,3 @@
 # EditableBufferedReader
-Parece que todo funciona correctamente
+Parece que todo funciona correctamente 
+O no...
