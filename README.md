@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # EditableBufferedReader
 ## 1) paso para actualizar la info:
 Asegurarte de que estás en la rama adecuada con git branch
@@ -17,3 +18,9 @@ Ordenadamente, esta práctica debería constar de los siguientes puntos:
 2.- Crear un EBR que extienda del BR y tenga setRaw, unsetRaw, read y readLine
 3.- Deberíamos crear la clase Line que mantenga el estado. Pero todo sin MVC
 4.- Programar con MVC
+=======
+# SAD
+## Descripción
+Este repositorio contiene proyectos de SAD. Cada proyecto se trabaja en una rama separada.
+- [EditableBufferedReader](https://github.com/AxelBuenoTome/SAD/tree/EditableBufferedReader)
+>>>>>>> main
