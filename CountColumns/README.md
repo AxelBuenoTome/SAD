@@ -1,6 +1,6 @@
 # Descripción del Programa en Java
 
-##Detalles del programa CountColumns:
+## Detalles del programa CountColumns:
 
 El programa pretende introducir el comando siguiente en el terminal:
 
