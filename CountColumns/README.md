@@ -1,8 +1,23 @@
 # Descripción del Programa en Java
 
-Este programa en Java utiliza el comando de terminal `tput` para obtener el ancho y la altura del terminal y luego muestra estos valores en la consola.
+##Detalles del programa CountColumns:
 
-## Detalles del programa:
+El programa pretende introducir el comando siguiente en el terminal:
+
+```java
+String[] cmd = {"/bin/sh", "-c", "tput cols > /dev/tty"};
+```
+
+Al igual que con el método setRaw y unsetRaw, lo que hacemos es lo siguiente:
+
+- "/bin/sh" indica al sistema es que estamos ejecutando un Shell
+- "-c" indica que la cadena que vamos a introducir es un comando para ejecutar
+- "> /dev/tty" a diferencia de setRaw, pretende desviar la salida hacia el terminal actual, para ver el resultado por pantalla
+- "tput cols" es el comando que introducido en el terminal nos permite conocer el número de columnas
+
+## Detalles del programa CountColumnsTerminal:
+
+Este programa en Java utiliza el comando de terminal `tput` para obtener el ancho y la altura del terminal y luego muestra estos valores en la consola.
 
 ### 1. Ejecución de comandos de terminal:
 

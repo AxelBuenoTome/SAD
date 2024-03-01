@@ -7,7 +7,7 @@ public class CountColumns {
 
         CountColumns countColumns = new CountColumns();
         countColumns.Columns();
-        
+
     }
     public void Columns() {
         //desviamos la salida hacia /dev/tty para que se muestre el resultado en el terminal actual
