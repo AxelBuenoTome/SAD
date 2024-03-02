@@ -6,8 +6,11 @@ import java.io.InputStreamReader;
 
 public class EditableBufferedReader extends BufferedReader {
 
+    private Line line;
+
     public EditableBufferedReader(InputStreamReader in) {
         super(in);
+        line = new Line();
     }
 
     // Mètode per passar la consola a mode raw
@@ -31,13 +34,28 @@ public class EditableBufferedReader extends BufferedReader {
     }
 
     // Mètode per llegir el següent caràcter o la següent tecla de cursor
+    //Returns --> The character read, as an integer in the range 0 to 65535 (0x00-0xffff), or -1 if the end of the stream has been reached
     public int read() throws IOException {
         int inputChar = super.read();
         // Processa el caràcter llegit segons les teves necessitats
         return inputChar;
     }
+    public String readLine() throws IOException {
+        setRaw();
+        int actualChar;
 
+        // Leer caracteres hasta que se presione Enter (código ASCII 13)
+        while ((actualChar = this.read()) != 13) {
+            line.addChar(actualChar);
+            System.out.print("\r" + line.toString());   
+        }
+        unsetRaw();
+        return line.toString();
+    }
+/* 
+    **** ESTO YA SE PUEDE BORRAR ****
     // Mètode per llegir una línia amb possibilitat d'editar-la
+    //Returns --> A String containing the contents of the line, not including any line-termination characters, or null if the end of the stream has been reached
     public String readLine() throws IOException {
         Line line = new Line();
         int input;
@@ -56,7 +74,7 @@ public class EditableBufferedReader extends BufferedReader {
         }
         return line.toString();
     }
-
+    **** ESTO YA SE PUEDE BORRAR ****
     // Exemple d'ús
     public static void main(String[] args) throws IOException {
         EditableBufferedReader reader = new EditableBufferedReader(new InputStreamReader(System.in));
@@ -66,4 +84,5 @@ public class EditableBufferedReader extends BufferedReader {
         reader.unsetRaw();
         System.out.println("Línia llegida: " + line);
     }
+    */
 }
