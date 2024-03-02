@@ -11,34 +11,22 @@ public class EditableBufferedReader extends BufferedReader {
     }
 
     // Mètode per passar la consola a mode raw
-    private static void setRaw() throws IOException {
-        // Implementación básica para cambiar al modo raw
-        ProcessBuilder pb = new ProcessBuilder("/bin/sh", "-c", "stty -echo raw < /dev/tty");
-        pb.redirectInput(ProcessBuilder.Redirect.INHERIT);
-        pb.redirectOutput(ProcessBuilder.Redirect.INHERIT);
-        pb.redirectError(ProcessBuilder.Redirect.INHERIT);
-        Process process = pb.start();
-
+    public void setRaw() {
+        String[] cmd = {"/bin/sh", "-c", "stty -echo raw </dev/tty"};
         try {
-            process.waitFor();
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
+            Runtime.getRuntime().exec(cmd);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
     // Mètode per passar la consola a mode cooked
-    private static void unsetRaw() throws IOException {
-        // Implementación básica para restaurar al modo cooked
-        ProcessBuilder pb = new ProcessBuilder("/bin/sh", "-c", "stty echo cooked < /dev/tty");
-        pb.redirectInput(ProcessBuilder.Redirect.INHERIT);
-        pb.redirectOutput(ProcessBuilder.Redirect.INHERIT);
-        pb.redirectError(ProcessBuilder.Redirect.INHERIT);
-        Process process = pb.start();
-
+    public void unsetRaw() {
+        String[] cmd = {"/bin/sh", "-c", "stty echo cooked </dev/tty"};
         try {
-            process.waitFor();
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
+            Runtime.getRuntime().exec(cmd);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
