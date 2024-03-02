@@ -51,21 +51,21 @@ public class EditableBufferedReader extends BufferedReader {
 
     // Mètode per llegir una línia amb possibilitat d'editar-la
     public String readLine() throws IOException {
-        StringBuilder line = new StringBuilder();
+        Line line = new Line();
         int input;
-            while ((input = super.read()) != 13) {
-                if (input == 127 || input == 8) {
-                    // Esborra el caràcter anterior en cas de backspace
-                    if (line.length() > 0) {
-                        line.deleteCharAt(line.length() - 1);
-                        System.out.print("\b \b"); // Mostra el backspace per simular l'efecte visual
-                    }
-                } else {
-                    // Afegix el caràcter llegit a la línia
-                    line.append((char) input);
-                    System.out.print((char) input); // Mostra el caràcter llegit
+        while ((input = read()) != 13) {
+            if (input == 127 || input == 8) {
+                // Delete the previous character in case of backspace
+                if (line.length() > 0) {
+                    line.deleteChar();
+                    System.out.print("\b \b");
                 }
+            } else {
+                // Add the read character to the line
+                line.append((char) input);
+                System.out.print((char) input);
             }
+        }
         return line.toString();
     }
 
