@@ -17,8 +17,33 @@ public class Line {
 
     public void addChar(int c) {
         char character = (char) c; //convertimos el entero pasado como parámetro a carácter
-        characters.add(cursorPosition, character);
-        cursorPosition++;
+
+        //leemos si se trata de una flecha
+        if (37<=c && c<=40){
+            //flecha izquierda
+            if(37 == c){
+                cursorPosition++;
+            
+            //flecha arriba
+            }else if(38 == c){
+                cursorPosition--;
+
+            //flecha derecha
+            }else if (39 == c){
+                cursorPosition++;
+
+            //flecha abajo
+            }else {
+                cursorPosition--;
+            }
+            
+        //backspace
+        }else if(c == 127 || c == 8) {
+            characters.remove(cursorPosition);
+        }else{
+            characters.add(cursorPosition, character);
+            cursorPosition++;
+        }
         /* 
         *** ESTA LÓGICA SERVIRÁ PARA CUANDO USEMOS LA TECLA INSERT ***
         *** falta rematarlo *** 
