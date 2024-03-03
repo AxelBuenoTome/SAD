@@ -38,6 +38,24 @@ public class EditableBufferedReader extends BufferedReader {
     public int read() throws IOException {
         int inputChar = super.read();
         // Processa el caràcter llegit segons les teves necessitats
+        switch (inputChar) {
+            case 27:
+                if (super.read() == 91){
+                    int c = super.read();
+                    if(c == 68){
+                        line.leftArrow();
+                    }else if (c == 67){
+                        line.rightArrow();
+                    }
+                }
+                break;
+
+            case 8:
+                line.backspace();
+                break;
+            default:
+                break;
+        }
         return inputChar;
     }
     public String readLine() throws IOException {

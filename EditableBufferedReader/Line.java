@@ -17,33 +17,8 @@ public class Line {
 
     public void addChar(int c) {
         char character = (char) c; //convertimos el entero pasado como parámetro a carácter
-
-        //leemos si se trata de una flecha
-        if (37<=c && c<=40){
-            //flecha izquierda
-            if(37 == c){
-                cursorPosition++;
-            
-            //flecha arriba
-            }else if(38 == c){
-                cursorPosition--;
-
-            //flecha derecha
-            }else if (39 == c){
-                cursorPosition++;
-
-            //flecha abajo
-            }else {
-                cursorPosition--;
-            }
-            
-        //backspace
-        }else if(c == 127 || c == 8) {
-            characters.remove(cursorPosition);
-        }else{
             characters.add(cursorPosition, character);
             cursorPosition++;
-        }
         /* 
         *** ESTA LÓGICA SERVIRÁ PARA CUANDO USEMOS LA TECLA INSERT ***
         *** falta rematarlo *** 
@@ -54,7 +29,25 @@ public class Line {
             characters.set(cursorPosition, character);
             cursorPosition++;
         }
-        */
+      */
+    }
+
+    public void leftArrow(){
+        if(cursorPosition > 1){
+            cursorPosition--;
+        }
+    }
+    public void rightArrow(){
+        if (cursorPosition <= characters.size() ){
+            cursorPosition++;
+        }
+    }
+
+    public void backspace(){
+        if (cursorPosition > 0){
+            int position = cursorPosition - 1;
+            characters.remove(position);
+        }
     }
     //Sin este nuevo String se imprimen los identificadores Hexadecimales
     //es más efectivo usar un stringBuilder que un String
