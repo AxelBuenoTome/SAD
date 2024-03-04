@@ -4,7 +4,25 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+import javax.swing.DefaultBoundedRangeModel;
+
 public class EditableBufferedReader extends BufferedReader {
+    
+    static final int RIGHT = 67; //C porque es ^[[C
+    static final int LEFT = 68; //D porque es ^[[D
+    static final int ESC = 27; // ESC
+    static final int SQUARE_BRAQUET = 91; // "["
+    static final int DEL = 51; //3 porque es ^[[3~
+    static final int TILDE = 126; // "~"
+    //static final int BSKP = 8; //8 porque es \b??????
+    
+    //Reasignaciones de la tabla ASCII, a partir de valores que no usamos
+    static final int RIGHT_VAL = 169;
+    static final int LEFT_VAL = 170;
+    static final int DEL_VAL = 171;
+    static final int HOME_VAL = 172;
+    static final int END_VAL = 173;
+    static final int INS_VAL = 174;
 
     private Line line;
 
@@ -35,72 +53,75 @@ public class EditableBufferedReader extends BufferedReader {
 
     // Mètode per llegir el següent caràcter o la següent tecla de cursor
     //Returns --> The character read, as an integer in the range 0 to 65535 (0x00-0xffff), or -1 if the end of the stream has been reached
+    @Override
     public int read() throws IOException {
         int inputChar = super.read();
+        //*** los métodos no se ejecutan en el read, el read devuelve el entero, y este se comprueba en readLine ***
         // Processa el caràcter llegit segons les teves necessitats
-        switch (inputChar) {
-            case 27:
-                if (super.read() == 91){
-                    int c = super.read();
-                    if(c == 68){
-                        line.leftArrow();
-                    }else if (c == 67){
-                        line.rightArrow();
-                    }
-                }
-                break;
+        //comprobamos si es un caracter escape
+        if(inputChar==ESC){
+            //Hay que volver a leer para ver si es un caracter de edición
+            inputChar=super.read();
+            if(inputChar==SQUARE_BRAQUET){
+                //ahora viene el switch entre todos los posibles casos, tenemos que leer una última vez
+                inputChar=super.read();
+                switch(inputChar){
+                    //en caso de que el último caracter sea el 68 --> D porque izquierda es ^[[D
+                    case LEFT:
+                        // retornamos un número asignado por nosotros que no se use de la tabla ASCII
+                        // porque el 91 está asignado a la letra D
+                        return LEFT_VAL;
 
-            case 8:
-                line.backspace();
-                break;
-            default:
-                break;
+                    case RIGHT:
+                        return RIGHT_VAL;
+                    
+                    case DEL:
+                        inputChar=super.read();
+                        if(inputChar==TILDE){
+                            return DEL_VAL;
+                        }
+                    
+                    default:
+                    //esto no estoy del todo seguro de si deberíamos cambiarlo. Al pulsar flecha arriba retorna una A y al pulsar flecha abajo una B
+                        return inputChar;
+                }
+            }
         }
         return inputChar;
     }
+
     public String readLine() throws IOException {
         setRaw();
         int actualChar;
+        // Leer caracteres hasta que se presione Enter (código ASCII 13) (no sé si el do while es lo mejor)
+        do{
+            actualChar = this.read();
+            //hay que hacer un switch con los diferentes casos. El default será el .addChar
+            switch(actualChar){
+                
+                case RIGHT_VAL:
+                    line.rightArrow();
+                    break;
 
-        // Leer caracteres hasta que se presione Enter (código ASCII 13)
-        while ((actualChar = this.read()) != 13) {
-            line.addChar(actualChar);
+                case LEFT_VAL:
+                    line.leftArrow();
+                    break;
+                /* Llevo un lio bueno, no sé cual es delete ni backspace
+                case DEL_VAL:
+                    line...();
+                    break;
+
+                case BSK:
+                    line.backspace();
+                    break;*/
+                default:
+                    line.addChar(actualChar);
+            }
             System.out.print("\r" + line.toString());   
-        }
+            //Mueve el cursor al printar el terminal!!!
+            System.out.print("\033[" + (line.getCursorPosition() + 1) + "G");
+        }while (actualChar != 13);
         unsetRaw();
         return line.toString();
     }
-/* 
-    **** ESTO YA SE PUEDE BORRAR ****
-    // Mètode per llegir una línia amb possibilitat d'editar-la
-    //Returns --> A String containing the contents of the line, not including any line-termination characters, or null if the end of the stream has been reached
-    public String readLine() throws IOException {
-        Line line = new Line();
-        int input;
-        while ((input = read()) != 13) {
-            if (input == 127 || input == 8) {
-                // Delete the previous character in case of backspace
-                if (line.length() > 0) {
-                    line.deleteChar();
-                    System.out.print("\b \b");
-                }
-            } else {
-                // Add the read character to the line
-                line.append((char) input);
-                System.out.print((char) input);
-            }
-        }
-        return line.toString();
-    }
-    **** ESTO YA SE PUEDE BORRAR ****
-    // Exemple d'ús
-    public static void main(String[] args) throws IOException {
-        EditableBufferedReader reader = new EditableBufferedReader(new InputStreamReader(System.in));
-        System.out.println("Introdueix una línia: ");
-        reader.setRaw();
-        String line = reader.readLine();
-        reader.unsetRaw();
-        System.out.println("Línia llegida: " + line);
-    }
-    */
 }

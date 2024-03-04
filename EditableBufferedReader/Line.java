@@ -21,7 +21,7 @@ public class Line {
             cursorPosition++;
         /* 
         *** ESTA LÓGICA SERVIRÁ PARA CUANDO USEMOS LA TECLA INSERT ***
-        *** falta rematarlo *** 
+        *** falta rematarlo (modo edición o modo escritura)*** 
         if (cursorPosition >= characters.size()) {
             characters.add(cursorPosition, character);
             cursorPosition++;
@@ -33,12 +33,12 @@ public class Line {
     }
 
     public void leftArrow(){
-        if(cursorPosition > 1){
+        if(cursorPosition > 0){
             cursorPosition--;
         }
     }
     public void rightArrow(){
-        if (cursorPosition <= characters.size() ){
+        if (cursorPosition < characters.size() ){
             cursorPosition++;
         }
     }
