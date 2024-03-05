@@ -5,10 +5,12 @@ import java.util.ArrayList;
 public class Line {
     private ArrayList<Character> characters;
     private int cursorPosition;
+    private boolean insert;
     
     public Line() {
         characters = new ArrayList<>();
         cursorPosition = 0;
+        insert = false;
     }
 
     public int getCursorPosition() { //to refresh
@@ -17,19 +19,29 @@ public class Line {
 
     public void addChar(int c) {
         char character = (char) c; //convertimos el entero pasado como parámetro a carácter
-            characters.add(cursorPosition, character);
-            cursorPosition++;
+            
         /* 
         *** ESTA LÓGICA SERVIRÁ PARA CUANDO USEMOS LA TECLA INSERT ***
         *** falta rematarlo (modo edición o modo escritura)*** 
-        if (cursorPosition >= characters.size()) {
+        */
+        if (!insert) {
             characters.add(cursorPosition, character);
             cursorPosition++;
         } else { //para el insert
             characters.set(cursorPosition, character);
             cursorPosition++;
         }
-      */
+      
+    }
+
+    //este metodo pasa el terminal a modo insertar
+    public void setInsert(){
+        insert = false;
+    }
+
+    //este metodo pasa el terminal a modo insertar
+    public void unSetInsert(){
+        insert = false;
     }
 
     public void leftArrow(){

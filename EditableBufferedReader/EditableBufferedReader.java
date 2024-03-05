@@ -115,7 +115,7 @@ public class EditableBufferedReader extends BufferedReader {
                 case BSK:
                     line.backspace();
                     break;
-
+                
                 default:
                     line.addChar(actualChar);
                     break;
