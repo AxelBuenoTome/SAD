@@ -45,8 +45,14 @@ public class Line {
 
     public void backspace(){
         if (cursorPosition > 0){
-            int position = cursorPosition - 1;
-            characters.remove(position);
+            cursorPosition --;
+            characters.remove(cursorPosition);
+        }
+    }
+
+    public void delete(){
+        if (cursorPosition < characters.size() ){
+            characters.remove(cursorPosition);
         }
     }
     //Sin este nuevo String se imprimen los identificadores Hexadecimales

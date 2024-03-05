@@ -14,6 +14,7 @@ public class EditableBufferedReader extends BufferedReader {
     static final int SQUARE_BRAQUET = 91; // "["
     static final int DEL = 51; //3 porque es ^[[3~
     static final int TILDE = 126; // "~"
+    static final int BSK = 127;
     //static final int BSKP = 8; //8 porque es \b??????
     
     //Reasignaciones de la tabla ASCII, a partir de valores que no usamos
@@ -23,6 +24,7 @@ public class EditableBufferedReader extends BufferedReader {
     static final int HOME_VAL = 172;
     static final int END_VAL = 173;
     static final int INS_VAL = 174;
+
 
     private Line line;
 
@@ -94,8 +96,7 @@ public class EditableBufferedReader extends BufferedReader {
         setRaw();
         int actualChar;
         // Leer caracteres hasta que se presione Enter (código ASCII 13) (no sé si el do while es lo mejor)
-        do{
-            actualChar = this.read();
+        while ((actualChar = this.read()) != 13){
             //hay que hacer un switch con los diferentes casos. El default será el .addChar
             switch(actualChar){
                 
@@ -106,21 +107,24 @@ public class EditableBufferedReader extends BufferedReader {
                 case LEFT_VAL:
                     line.leftArrow();
                     break;
-                /* Llevo un lio bueno, no sé cual es delete ni backspace
+                // Llevo un lio bueno, no sé cual es delete ni backspace
                 case DEL_VAL:
-                    line...();
+                    line.delete();
                     break;
 
                 case BSK:
                     line.backspace();
-                    break;*/
+                    break;
+
                 default:
                     line.addChar(actualChar);
+                    break;
             }
+            System.out.print("\033[2K\033[1G");
             System.out.print("\r" + line.toString());   
             //Mueve el cursor al printar el terminal!!!
             System.out.print("\033[" + (line.getCursorPosition() + 1) + "G");
-        }while (actualChar != 13);
+        }
         unsetRaw();
         return line.toString();
     }
