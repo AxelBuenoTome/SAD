@@ -5,12 +5,12 @@ import java.util.ArrayList;
 public class Line {
     private ArrayList<Character> characters;
     private int cursorPosition;
-    private boolean insert;
+    private boolean isinsert;
     
     public Line() {
         characters = new ArrayList<>();
         cursorPosition = 0;
-        insert = false;
+        isinsert = false;
     }
 
     public int getCursorPosition() { //to refresh
@@ -24,7 +24,7 @@ public class Line {
         *** ESTA LÓGICA SERVIRÁ PARA CUANDO USEMOS LA TECLA INSERT ***
         *** falta rematarlo (modo edición o modo escritura)*** 
         */
-        if (!insert) {
+        if (!isinsert) {
             characters.add(cursorPosition, character);
             cursorPosition++;
         } else { //para el insert
@@ -34,14 +34,17 @@ public class Line {
       
     }
 
-    //este metodo pasa el terminal a modo insertar
-    public void setInsert(){
-        insert = false;
+    public void setHome(){
+        cursorPosition = 0;
+    }
+
+    public void setEnd(){
+        cursorPosition = characters.size();
     }
 
     //este metodo pasa el terminal a modo insertar
-    public void unSetInsert(){
-        insert = false;
+    public void setInsert(){
+        isinsert = !isinsert;
     }
 
     public void leftArrow(){
