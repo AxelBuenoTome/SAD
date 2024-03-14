@@ -29,6 +29,11 @@ public class Console implements Observer{
         switch(cmd){
             case CHAR:
                 System.out.print(line.toString().charAt(line.getCursorPosition() - 1));
+                /* ***Podemos usar esto sino ***
+                System.out.print("\033[2K\033[1G");
+                System.out.print("\r" + line.toString());
+                // Mueve el cursor al printar el terminal!!!
+                System.out.print("\033[" + (line.getCursorPosition() + 1) + "G"); */
                 break;
             case INS_VAL:
                 System.out.print(INS_STR);
