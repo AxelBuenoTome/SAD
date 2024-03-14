@@ -5,6 +5,9 @@ import java.util.Observable;
 import java.util.Observer;
 
 public class Line extends Observable{
+
+    static final int CHAR = 206;
+
     private ArrayList<Character> characters;
     private int cursorPosition;
     private boolean isinsert;
@@ -17,12 +20,6 @@ public class Line extends Observable{
         //añadimos el Arraylist de observers
         observers = new ArrayList<>();
     }
-
-    //método para registrar y notificar observers
-    public void addObserver(Observer observer){
-        observers.add(observer);
-    }
-
 
     public int getCursorPosition() { //to refresh
         return cursorPosition;
@@ -38,6 +35,10 @@ public class Line extends Observable{
             characters.set(cursorPosition, character);
             cursorPosition++;
         }
+        //indicamos que ha habido un cambio
+        this.setChanged();
+        //notificamos que ha habido un cambio
+        this.notifyObservers(CHAR);
       
     }
 

@@ -18,6 +18,7 @@ public class EditableBufferedReader extends BufferedReader {
     static final int HOME = 72; // H porque ^[[H
     static final int TILDE = 126; // "~"
     static final int BSK = 127; // bacspace "\b"
+    static final int ENTER = 13;
 
     static final int RIGHT_VAL = 169;
     static final int LEFT_VAL = 170;
@@ -27,10 +28,13 @@ public class EditableBufferedReader extends BufferedReader {
     static final int INS_VAL = 174;
 
     private Line line;
+    private Console console;
 
     public EditableBufferedReader(InputStreamReader in) {
         super(in);
         line = new Line();
+        console = new Console (line);
+        line.addObserver(console);
     }
 
     public void setRaw() {
@@ -96,7 +100,7 @@ public class EditableBufferedReader extends BufferedReader {
     public String readLine() throws IOException {
         setRaw();
         int actualChar;
-        while ((actualChar = this.read()) != 13) {
+        while ((actualChar = this.read()) != ENTER) {
             switch (actualChar) {
 
                 case RIGHT_VAL:
@@ -131,9 +135,6 @@ public class EditableBufferedReader extends BufferedReader {
                     line.addChar(actualChar);
                     break;
             }
-            System.out.print("\033[2K\033[1G");
-            System.out.print("\r" + line.toString());
-            System.out.print("\033[" + (line.getCursorPosition() + 1) + "G");
         }
         unsetRaw();
         return line.toString();
