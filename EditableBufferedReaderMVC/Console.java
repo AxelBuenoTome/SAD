@@ -16,6 +16,10 @@ public class Console implements Observer{
 
     static final String INS_STR = "\033[4h";
     static final String HOME_STR = "\033[1G";
+    static final String END_STR = "\u001b[4~";
+    static final String LEFT_STR = "\u001b[D";
+    static final String RIGHT_STR = "\u001b[C";
+
 
     Line line;
 
@@ -38,8 +42,17 @@ public class Console implements Observer{
             case INS_VAL:
                 System.out.print(INS_STR);
                 break;
+            case END_VAL:
+                System.out.print(END_STR);
+                break;
             case HOME_VAL:
                 System.out.print(HOME_STR);
+                break;
+            case RIGHT_VAL:
+                System.out.print(RIGHT_STR);
+                break;
+            case LEFT_VAL:
+                System.out.print(LEFT_STR);
                 break;
             default:
                 break;
