@@ -34,13 +34,11 @@ public class Line extends Observable{
     public void addChar(int c) {
         char character = (char) c; 
 
-        if (!isinsert) {
-            characters.add(cursorPosition, character);
-            cursorPosition++;
-        } else { //para el insert
-            characters.set(cursorPosition, character);
-            cursorPosition++;
+        if(isinsert){
+            this.delete();
         }
+        characters.add(cursorPosition, character);
+        cursorPosition++;
         //indicamos que ha habido un cambio
         this.setChanged();
         //notificamos que ha habido un cambio
