@@ -4,8 +4,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-
-
 public class EditableBufferedReader extends BufferedReader {
 
     static final int RIGHT = 67; // C porque es ^[[C
@@ -33,7 +31,7 @@ public class EditableBufferedReader extends BufferedReader {
     public EditableBufferedReader(InputStreamReader in) {
         super(in);
         line = new Line();
-        console = new Console (line);
+        console = new Console(line);
         line.addObserver(console);
     }
 
@@ -80,14 +78,11 @@ public class EditableBufferedReader extends BufferedReader {
                         if (inputChar == TILDE) {
                             return INS_VAL;
                         }
-                    case SQUARE_BRAQUET:
-                        switch (inputChar = super.read()) {
-                            case END:
-                                return END_VAL;
+                    case END:
+                        return END_VAL;
 
-                            case HOME:
-                                return HOME_VAL;
-                        }
+                    case HOME:
+                        return HOME_VAL;
 
                     default:
                         return inputChar;
@@ -123,11 +118,11 @@ public class EditableBufferedReader extends BufferedReader {
                     line.backspace();
                     break;
 
-                case END:
+                case END_VAL:
                     line.setEnd();
                     break;
 
-                case HOME:
+                case HOME_VAL:
                     line.setHome();
                     break;
 

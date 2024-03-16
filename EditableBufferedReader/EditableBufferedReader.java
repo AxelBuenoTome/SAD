@@ -93,14 +93,11 @@ public class EditableBufferedReader extends BufferedReader {
                         if (inputChar == TILDE) {
                             return INS_VAL;
                         }
-                    case SQUARE_BRAQUET:
-                        switch (inputChar = super.read()) {
-                            case END:
-                                return END_VAL;
+                    case END:
+                        return END_VAL;
 
-                            case HOME:
-                                return HOME_VAL;
-                        }
+                    case HOME:
+                        return HOME_VAL;
 
                     default:
                         // esto no estoy del todo seguro de si deberíamos cambiarlo. Al pulsar flecha
@@ -141,11 +138,11 @@ public class EditableBufferedReader extends BufferedReader {
                     line.backspace();
                     break;
 
-                case END:
+                case END_VAL:
                     line.setEnd();
                     break;
 
-                case HOME:
+                case HOME_VAL:
                     line.setHome();
                     break;
 
