@@ -6,25 +6,6 @@ import java.io.InputStreamReader;
 
 public class EditableBufferedReader extends BufferedReader {
 
-    static final int RIGHT = 67; // C porque es ^[[C
-    static final int LEFT = 68; // D porque es ^[[D
-    static final int ESC = 27; // ESC
-    static final int SQUARE_BRAQUET = 91; // "["
-    static final int DEL = 51; // 3 porque es ^[[3~
-    static final int INS = 50; // 2 porque ^[[2~
-    static final int END = 70; // F porque ^[[F
-    static final int HOME = 72; // H porque ^[[H
-    static final int TILDE = 126; // "~"
-    static final int BSK = 127; // bacspace "\b"
-    static final int ENTER = 13;
-
-    static final int RIGHT_VAL = 169;
-    static final int LEFT_VAL = 170;
-    static final int DEL_VAL = 171;
-    static final int HOME_VAL = 172;
-    static final int END_VAL = 173;
-    static final int INS_VAL = 174;
-
     private Line line;
     private Console console;
 
@@ -56,73 +37,60 @@ public class EditableBufferedReader extends BufferedReader {
     @Override
     public int read() throws IOException {
         int inputChar = super.read();
-        if (inputChar == ESC) {
+        if (inputChar == KEY.ESC) {
             inputChar = super.read();
-            if (inputChar == SQUARE_BRAQUET) {
+            if (inputChar == KEY.SQUARE_BRACKET) {
                 inputChar = super.read();
                 switch (inputChar) {
-                    case LEFT:
-                        return LEFT_VAL;
-
-                    case RIGHT:
-                        return RIGHT_VAL;
-
-                    case DEL:
-                        inputChar = super.read();
-                        if (inputChar == TILDE) {
-                            return DEL_VAL;
-                        }
-
-                    case INS:
-                        inputChar = super.read();
-                        if (inputChar == TILDE) {
-                            return INS_VAL;
-                        }
-                    case END:
-                        return END_VAL;
-
-                    case HOME:
-                        return HOME_VAL;
-
-                    default:
-                        return inputChar;
+                    case KEY.INS: //2
+                    case KEY.DEL: //3
+                        int aux = super.read();
+                        if(aux == KEY.TILDE){
+                            return KEY.JOKER + inputChar;
+                        }else{
+                            break;
+                        }  
+                    case KEY.RIGHT: //C
+                    case KEY.LEFT: //D
+                    case KEY.END: //F
+                    case KEY.HOME: //H
+                        return KEY.JOKER + inputChar;
                 }
             }
         }
         return inputChar;
     }
-
     public String readLine() throws IOException {
         setRaw();
         int actualChar;
-        while ((actualChar = this.read()) != ENTER) {
+        while ((actualChar = this.read()) != KEY.ENTER) {
             switch (actualChar) {
 
-                case RIGHT_VAL:
+                case KEY.RIGHT_VAL:
                     line.rightArrow();
                     break;
 
-                case LEFT_VAL:
+                case KEY.LEFT_VAL:
                     line.leftArrow();
                     break;
 
-                case DEL_VAL:
+                case KEY.DEL_VAL:
                     line.delete();
                     break;
 
-                case INS_VAL:
+                case KEY.INS_VAL:
                     line.setInsert();
                     break;
 
-                case BSK:
+                case KEY.BSK:
                     line.backspace();
                     break;
 
-                case END_VAL:
+                case KEY.END_VAL:
                     line.setEnd();
                     break;
 
-                case HOME_VAL:
+                case KEY.HOME_VAL:
                     line.setHome();
                     break;
 

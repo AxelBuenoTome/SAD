@@ -8,16 +8,6 @@ import javax.swing.text.AttributeSet.CharacterAttribute;
 
 public class Line extends Observable {
 
-    static final int CHAR = 206;
-    static final int RIGHT_VAL = 169;
-    static final int LEFT_VAL = 170;
-    static final int DEL_VAL = 171;
-    static final int HOME_VAL = 172;
-    static final int END_VAL = 173;
-    static final int INS_VAL = 174;
-    static final int CURSOR_VAL = 175;
-    static final int BSK = 127;
-
     private ArrayList<Character> characters;
     private int cursorPosition;
     private boolean isinsert;
@@ -47,7 +37,7 @@ public class Line extends Observable {
         // indicamos que ha habido un cambio
         this.setChanged();
         // notificamos que ha habido un cambio
-        this.notifyObservers(CHAR);
+        this.notifyObservers(KEY.CHAR);
 
     }
 
@@ -56,7 +46,7 @@ public class Line extends Observable {
         // indicamos que ha habido un cambio
         this.setChanged();
         // notificamos que ha habido un cambio
-        this.notifyObservers(CURSOR_VAL);
+        this.notifyObservers(KEY.CURSOR_VAL);
     }
 
     public void setEnd() {
@@ -64,7 +54,7 @@ public class Line extends Observable {
         // indicamos que ha habido un cambio
         this.setChanged();
         // notificamos que ha habido un cambio
-        this.notifyObservers(CURSOR_VAL);
+        this.notifyObservers(KEY.CURSOR_VAL);
     }
 
     public void setInsert() {
@@ -72,7 +62,7 @@ public class Line extends Observable {
         // indicamos que ha habido un cambio
         this.setChanged();
         // notificamos que ha habido un cambio
-        this.notifyObservers(INS_VAL);
+        this.notifyObservers(KEY.INS_VAL);
     }
 
     public void leftArrow() {
@@ -81,7 +71,7 @@ public class Line extends Observable {
             // indicamos que ha habido un cambio
             this.setChanged();
             // notificamos que ha habido un cambio
-            this.notifyObservers(CURSOR_VAL);
+            this.notifyObservers(KEY.CURSOR_VAL);
         }
     }
 
@@ -91,7 +81,7 @@ public class Line extends Observable {
             // indicamos que ha habido un cambio
             this.setChanged();
             // notificamos que ha habido un cambio
-            this.notifyObservers(CURSOR_VAL);
+            this.notifyObservers(KEY.CURSOR_VAL);
         }
     }
 
@@ -102,7 +92,7 @@ public class Line extends Observable {
             // indicamos que ha habido un cambio
             this.setChanged();
             // notificamos que ha habido un cambio
-            this.notifyObservers(CHAR);
+            this.notifyObservers(KEY.CHAR);
         }
     }
 
@@ -112,7 +102,7 @@ public class Line extends Observable {
             // indicamos que ha habido un cambio
             this.setChanged();
             // notificamos que ha habido un cambio
-            this.notifyObservers(CHAR);
+            this.notifyObservers(KEY.CHAR);
         }
     }
 

@@ -9,25 +9,6 @@ import javax.swing.DefaultBoundedRangeModel;
 
 public class EditableBufferedReader extends BufferedReader {
 
-    static final int RIGHT = 67; // C porque es ^[[C
-    static final int LEFT = 68; // D porque es ^[[D
-    static final int ESC = 27; // ESC
-    static final int SQUARE_BRAQUET = 91; // "["
-    static final int DEL = 51; // 3 porque es ^[[3~
-    static final int INS = 50; // 2 porque ^[[2~
-    static final int END = 70; // F porque ^[[F
-    static final int HOME = 72; // H porque ^[[H
-    static final int TILDE = 126; // "~"
-    static final int BSK = 127; // bacspace "\b"
-
-    // Reasignaciones de la tabla ASCII, a partir de valores que no usamos
-    static final int RIGHT_VAL = 169;
-    static final int LEFT_VAL = 170;
-    static final int DEL_VAL = 171;
-    static final int HOME_VAL = 172;
-    static final int END_VAL = 173;
-    static final int INS_VAL = 174;
-
     private Line line;
 
     public EditableBufferedReader(InputStreamReader in) {
@@ -59,6 +40,32 @@ public class EditableBufferedReader extends BufferedReader {
     // Returns --> The character read, as an integer in the range 0 to 65535
     // (0x00-0xffff), or -1 if the end of the stream has been reached
     @Override
+    public int read() throws IOException {
+        int inputChar = super.read();
+        if (inputChar == KEY.ESC) {
+            inputChar = super.read();
+            if (inputChar == KEY.SQUARE_BRACKET) {
+                inputChar = super.read();
+                switch (inputChar) {
+                    case KEY.INS: //2
+                    case KEY.DEL: //3
+                        int aux = super.read();
+                        if(aux == KEY.TILDE){
+                            return KEY.JOKER + inputChar;
+                        }else{
+                            break;
+                        }  
+                    case KEY.RIGHT: //C
+                    case KEY.LEFT: //D
+                    case KEY.END: //F
+                    case KEY.HOME: //H
+                        return KEY.JOKER + inputChar;
+                }
+            }
+        }
+        return inputChar;
+    }
+    /* @Override
     public int read() throws IOException {
         int inputChar = super.read();
         // *** los métodos no se ejecutan en el read, el read devuelve el entero, y este
@@ -107,42 +114,42 @@ public class EditableBufferedReader extends BufferedReader {
             }
         }
         return inputChar;
-    }
+    } */
 
     public String readLine() throws IOException {
         setRaw();
         int actualChar;
         // Leer caracteres hasta que se presione Enter (código ASCII 13) (no sé si el do
         // while es lo mejor)
-        while ((actualChar = this.read()) != 13) {
+        while ((actualChar = this.read()) != KEY.ENTER) {
             // hay que hacer un switch con los diferentes casos. El default será el .addChar
             switch (actualChar) {
 
-                case RIGHT_VAL:
+                case KEY.RIGHT_VAL:
                     line.rightArrow();
                     break;
 
-                case LEFT_VAL:
+                case KEY.LEFT_VAL:
                     line.leftArrow();
                     break;
                 // Llevo un lio bueno, no sé cual es delete ni backspace
-                case DEL_VAL:
+                case KEY.DEL_VAL:
                     line.delete();
                     break;
 
-                case INS_VAL:
+                case KEY.INS_VAL:
                     line.setInsert();
                     break;
 
-                case BSK:
+                case KEY.BSK:
                     line.backspace();
                     break;
 
-                case END_VAL:
+                case KEY.END_VAL:
                     line.setEnd();
                     break;
 
-                case HOME_VAL:
+                case KEY.HOME_VAL:
                     line.setHome();
                     break;
 
