@@ -1,5 +1,8 @@
 package EditableBufferedReaderMVC;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
@@ -10,6 +13,7 @@ public class Line extends Observable {
 
     private ArrayList<Character> characters;
     private int cursorPosition;
+    private int numColumns;
     private boolean isinsert;
     // añadimos el Arraylist de observers
     private ArrayList<Observer> observers;
@@ -34,6 +38,7 @@ public class Line extends Observable {
         }
         characters.add(cursorPosition, character);
         cursorPosition++;
+
         // indicamos que ha habido un cambio
         this.setChanged();
         // notificamos que ha habido un cambio
@@ -46,7 +51,7 @@ public class Line extends Observable {
         // indicamos que ha habido un cambio
         this.setChanged();
         // notificamos que ha habido un cambio
-        this.notifyObservers(KEY.CURSOR_VAL);
+        this.notifyObservers(KEY.CHAR);
     }
 
     public void setEnd() {
@@ -54,7 +59,7 @@ public class Line extends Observable {
         // indicamos que ha habido un cambio
         this.setChanged();
         // notificamos que ha habido un cambio
-        this.notifyObservers(KEY.CURSOR_VAL);
+        this.notifyObservers(KEY.CHAR);
     }
 
     public void setInsert() {
@@ -71,7 +76,7 @@ public class Line extends Observable {
             // indicamos que ha habido un cambio
             this.setChanged();
             // notificamos que ha habido un cambio
-            this.notifyObservers(KEY.CURSOR_VAL);
+            this.notifyObservers(KEY.CHAR);
         }
     }
 
@@ -81,7 +86,7 @@ public class Line extends Observable {
             // indicamos que ha habido un cambio
             this.setChanged();
             // notificamos que ha habido un cambio
-            this.notifyObservers(KEY.CURSOR_VAL);
+            this.notifyObservers(KEY.CHAR);
         }
     }
 
@@ -104,6 +109,19 @@ public class Line extends Observable {
             // notificamos que ha habido un cambio
             this.notifyObservers(KEY.CHAR);
         }
+    }
+
+    public int countColumns(){
+        //desviamos la salida hacia /dev/tty para que se muestre el resultado en el terminal actual
+        //Así evitamos el uso de un BufferedReader
+        try {
+            Process p = Runtime.getRuntime().exec(new String[] {"/bin/sh", "-c", "tput cols 2>/dev/tty"});
+            numColumns = Integer.parseInt(new BufferedReader(new InputStreamReader(p.getInputStream())).readLine());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        //funciona bien, comprobado conSystem.out.println(numColumns);
+        return numColumns;
     }
 
     @Override
