@@ -27,5 +27,15 @@ public class KEY {
 
     //valor para sumar al resto
     public static final int JOKER = 200;
+
+    //Strings Código ANSI
+    public static final String INS_STR = "\033[2~";
+    public static final String DEL_STR = "\033[3~";
+    public static final String UP_STR = "\033[A";
+    public static final String DOWN_STR = "\033[B";
+    public static final String RIGHT_STR = "\033[C";
+    public static final String LEFT_STR = "\033[D";
+    public static final String END_STR = "\033[F";
+    public static final String HOME_STR = "\033[H";
 }
 

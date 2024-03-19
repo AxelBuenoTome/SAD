@@ -35,11 +35,54 @@ public class EditableBufferedReader extends BufferedReader {
             e.printStackTrace();
         }
     }
-
-    // Mètode per llegir el següent caràcter o la següent tecla de cursor
-    // Returns --> The character read, as an integer in the range 0 to 65535
-    // (0x00-0xffff), or -1 if the end of the stream has been reached
+     //MÉTODO READ CON MATCH (FUNCIONA)
     @Override
+    public int read() throws IOException {
+        int inputChar;
+        if (match(KEY.HOME_STR)){
+            return KEY.HOME_VAL;
+        }
+        if (match(KEY.END_STR)){
+            return KEY.END_VAL;
+        }
+        if (match(KEY.LEFT_STR)){
+            return KEY.LEFT_VAL;
+        }
+        if (match(KEY.RIGHT_STR)){
+            return KEY.RIGHT_VAL;
+        }
+        if (match(KEY.INS_STR)){
+            return KEY.INS_VAL;
+        }
+        if (match(KEY.DEL_STR)){
+            return KEY.DEL_VAL;
+        }
+        //en caso de que no haya match, devolvemos el caracter
+        inputChar = super.read();
+        return inputChar; 
+    }
+
+    private boolean match(String escape) throws IOException{
+        //lo primero es guardar el estado actual del lector con mark(), perteneciente a BufferedReader
+        //indicamos el tamaño del String escape, para luego volver atrás la misma cifra
+        mark(escape.length());
+        try{
+            for(int i=0 ; i<escape.length(); i++){
+                int ch = super.read();
+                //miramos si el caracter leído coincide con el String escape, caracter a caracter.
+                if(ch != escape.charAt(i)){
+                    //si no hay match usamos el reset y devolvemos false (para el backtracking)
+                    reset();
+                    return false;
+                }
+            }
+            return true;
+        }finally{
+        }
+    }
+
+    //METODO READ CON SWITCH (VERSION II) - FUNCIONA
+    /*@Override
     public int read() throws IOException {
         int inputChar = super.read();
         if (inputChar == KEY.ESC) {
@@ -64,7 +107,9 @@ public class EditableBufferedReader extends BufferedReader {
             }
         }
         return inputChar;
-    }
+    }*/
+
+    //METODO READ VERSION I - FUNCIONA
     /* @Override
     public int read() throws IOException {
         int inputChar = super.read();
@@ -132,7 +177,7 @@ public class EditableBufferedReader extends BufferedReader {
                 case KEY.LEFT_VAL:
                     line.leftArrow();
                     break;
-                // Llevo un lio bueno, no sé cual es delete ni backspace
+                
                 case KEY.DEL_VAL:
                     line.delete();
                     break;
