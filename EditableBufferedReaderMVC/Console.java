@@ -36,9 +36,6 @@ public class Console implements Observer {
             case KEY.INS_VAL:
                 System.out.print(INS_STR);
                 break;
-            case KEY.CURSOR_VAL:
-                System.out.print("\033[" + (line.getCursorPosition()) + "G");
-            break;
             default:
                 break;
         }
