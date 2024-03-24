@@ -21,6 +21,9 @@ public class MySocket extends Socket{
         writer = new PrintWriter(socket.getOutputStream());
     }
 
-    public MySocket(Socket accept) {
+    public MySocket(Socket accept) throws IOException {
+        this.socket = accept;
+        reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        writer = new PrintWriter(socket.getOutputStream());
     }
 }

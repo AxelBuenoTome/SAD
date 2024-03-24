@@ -25,5 +25,16 @@ public class MyServerSocket extends ServerSocket{
             return null;
         }
     }
+
+    //cierra el servidor
+    @Override
+    public void close() throws IOException{
+        try{
+            serverSocket.close();
+        }
+        catch(IOException e){//TODO: hay que usar el e
+        }
+
+    }
 }
 
