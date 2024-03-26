@@ -17,13 +17,14 @@ public class Console implements Observer {
      */
 
     Line line;
-    int co, lo, c, l;
+    int co, lo, c, l, limit;
     boolean ins;
 
     public Console(Line line) {
         this.line = line;
         ins = false;
         this.getCursorPosition();
+        limit = countColumns();
         l = lo;
         c = co;
         System.out.print("\033[" + l + ";" + c + "H");
@@ -68,14 +69,13 @@ public class Console implements Observer {
         return numColumns;
     }
 
-    public void desplazrCursor(int d, int limit, String text) {
-        int c1 = c + d;
+    public void desplazrCursor(String text) {
+        int c1 = c;
         int l1 = l;
         for (int i = line.getCursorPosition(); i < text.length(); i++) {
             System.out.print(text.charAt(i));
             c1++;
             if (c1 >= limit) {
-                System.out.print("\n");
                 c1 = c1 % limit;
                 l1++;
             }
@@ -83,25 +83,41 @@ public class Console implements Observer {
         }
     }
 
+    public void cursorRight() {
+        c++;
+        if (c > limit) {
+            l++;
+            c = co;
+        }
+
+    }
+
+    public void cursorLeft() {
+        c--;
+        if (c < co) {
+            l--;
+            c = limit;
+        }
+    }
+
     @Override
     public void update(Observable o, Object arg) {
         int cmd = (int) arg;
-        int limit = countColumns();
-        String text=line.toString();
+        String text = line.toString();
         switch (cmd) {
             case KEY.CHAR:
                 if (ins) {
                     System.out.print("\033[P");
                 }
-                System.out.print("\033[@" + text.charAt(line.getCursorPosition() - 1));
-                c++;
+                desplazrCursor(text);
+                System.out.print(text.charAt(line.getCursorPosition() - 1));
+                cursorRight();
                 System.out.print("\033[" + l + ";" + c + "H");
                 break;
             case KEY.INS_VAL:
                 ins = !ins;
                 break;
             case KEY.END_VAL:
-
                 c = text.length() % limit;
                 l = text.length() / limit;
                 System.out.print("\033[" + l + ";" + c + "H");
@@ -118,11 +134,11 @@ public class Console implements Observer {
 
                 break;
             case KEY.RIGHT_VAL:
-                c++;
+                cursorRight();
                 System.out.print("\033[" + l + ";" + c + "H");
                 break;
             case KEY.LEFT_VAL:
-                c--;
+                cursorLeft();
                 System.out.print("\033[" + l + ";" + c + "H");
                 break;
             case KEY.DEL_VAL:
