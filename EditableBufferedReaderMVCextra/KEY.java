@@ -1,4 +1,4 @@
-package EditableBufferedReaderMVC;
+package EditableBufferedReaderMVCextra;
 
 public class KEY {
     public static final int ENTER = 13; // ENTER es el 13
