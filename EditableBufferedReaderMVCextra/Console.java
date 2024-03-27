@@ -73,10 +73,10 @@ public class Console implements Observer {
         int c1 = c;
         int l1 = l;
         for (int i = line.getCursorPosition(); i < text.length(); i++) {
-            System.out.print(text.charAt(i));
+            System.out.print(text.charAt(i-1));
             c1++;
             if (c1 >= limit) {
-                c1 = c1 % limit;
+                c1 = 0;
                 l1++;
             }
             System.out.print("\033[" + l1 + ";" + c1 + "H");
@@ -109,8 +109,8 @@ public class Console implements Observer {
                 if (ins) {
                     System.out.print("\033[P");
                 }
-                desplazrCursor(text);
                 System.out.print(text.charAt(line.getCursorPosition() - 1));
+                desplazrCursor(text);
                 cursorRight();
                 System.out.print("\033[" + l + ";" + c + "H");
                 break;
