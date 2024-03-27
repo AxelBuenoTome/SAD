@@ -118,8 +118,8 @@ public class Console implements Observer {
                 ins = !ins;
                 break;
             case KEY.END_VAL:
-                c = text.length() % limit;
-                l = text.length() / limit;
+                c = (text.length() % limit)+co-1;
+                l = (text.length() / limit)+lo;
                 System.out.print("\033[" + l + ";" + c + "H");
                 break;
             case KEY.HOME_VAL:
