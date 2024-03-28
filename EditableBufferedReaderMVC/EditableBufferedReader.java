@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+
 public class EditableBufferedReader extends BufferedReader {
 
     private Line line;
@@ -33,7 +34,7 @@ public class EditableBufferedReader extends BufferedReader {
             e.printStackTrace();
         }
     }
-
+    
      //MÉTODO READ CON MATCH (FUNCIONA)
      @Override
      public int read() throws IOException {
@@ -60,7 +61,7 @@ public class EditableBufferedReader extends BufferedReader {
          inputChar = super.read();
          return inputChar; 
      }
- 
+     
      private boolean match(String escape) throws IOException{
          //lo primero es guardar el estado actual del lector con mark(), perteneciente a BufferedReader
          //indicamos el tamaño del String escape, para luego volver atrás la misma cifra

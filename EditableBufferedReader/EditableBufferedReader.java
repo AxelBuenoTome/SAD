@@ -3,6 +3,7 @@ package EditableBufferedReader;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Scanner;
 
 //¿Quién ha puesto esto aquí?
 import javax.swing.DefaultBoundedRangeModel;
@@ -10,10 +11,12 @@ import javax.swing.DefaultBoundedRangeModel;
 public class EditableBufferedReader extends BufferedReader {
 
     private Line line;
+    private Scanner sc;
 
     public EditableBufferedReader(InputStreamReader in) {
         super(in);
         line = new Line();
+        sc = new Scanner(System.in);
     }
 
     // Mètode per passar la consola a mode raw
@@ -35,6 +38,29 @@ public class EditableBufferedReader extends BufferedReader {
             e.printStackTrace();
         }
     }
+
+    @Override
+     public int read() throws IOException {
+        int inputChar;
+        if (match("\033\\[[ABCDEFGH]")){
+	        return KEY.UP_VAL + group(1).charAt(0);
+        }
+        if (match("\033\\[[234]")){
+	        return KEY.INS_VAL + group(1).charAt(0);
+        }
+        inputChar = super.read();
+        return inputChar;
+     }
+     
+    public boolean match (String s) throws IOException{
+        return sc.skip("(?:" + s + ")?").match().group().length() > 0;
+        }
+        
+    public String group (int index){
+        return sc.match().group(index);
+        }
+        
+    /*
      //MÉTODO READ CON MATCH (FUNCIONA)
     @Override
     public int read() throws IOException {
@@ -79,7 +105,7 @@ public class EditableBufferedReader extends BufferedReader {
             return true;
         }finally{
         }
-    }
+    }*/
 
     //METODO READ CON SWITCH (VERSION II) - FUNCIONA
     /*@Override
