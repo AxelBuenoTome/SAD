@@ -142,12 +142,14 @@ public class Console implements Observer {
                 System.out.print("\033[" + l + ";" + c + "H");
                 break;
             case KEY.DEL_VAL:
-                System.out.print("\033[P");
+                desplazrCursor(text);
+                System.out.print("\033[" + l + ";" + c + "H");
                 break;
             case KEY.BSK_VAL:
                 c--;
                 System.out.print("\033[" + l + ";" + c + "H");
-                System.out.print("\033[P");
+                desplazrCursor(text);
+                System.out.print("\033[" + l + ";" + c + "H");
 
                 break;
             default:
