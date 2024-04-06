@@ -18,19 +18,23 @@ public class MySocket extends Socket{
         //Creamos el socket
         socket = new Socket(host, port);
         //streams de lectura y escritura
-        reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-        writer = new PrintWriter(socket.getOutputStream(),true); //no tengo muy claro lo del autoFlush
+        reader = new BufferedReader(new InputStreamReader(System.in)); //creo que este ha de ser Sytem.in pq lee del teclado
+        writer = new PrintWriter(socket.getOutputStream()); 
+        System.out.println("\u001B[34m" + "Socket creado correstamente :)"+ "\u001B[0m"); //COLOR AZUL
     }
-
+    
     public MySocket(Socket accept) throws IOException {
+        //System.out.println("Se ha aceptado el socket desde mySocket");
         this.socket = accept;
-        reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        reader = new BufferedReader(new InputStreamReader(socket.getInputStream())); //este creo que ha de ser así pq espera que escriba el server
         writer = new PrintWriter(socket.getOutputStream());
     }
     public String readLine() throws IOException{
+        System.out.println("\u001B[34m" + "Se esta leyendo la linea " + "\u001B[0m"); //COLOR AZUL
         return reader.readLine();
     }
     public void println(String message){
+        //System.out.println("estamos escribiendo la linea");
         writer.println(message);
     }
     public void close() throws IOException{
