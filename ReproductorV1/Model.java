@@ -33,34 +33,13 @@ public class Model {
     // Método para reproducir el archivo seleccionado
     // le pasaremos el nombre como parametro y la ruta
     /*public void play(String fileName, String filePath){
-        //String[] cmd = { "/bin/sh", "-c", "play " + filePath + File.separator + fileName };
+        //String[] cmd = { "/bin/sh", "-c", "play " + filePath + File.separator + fileName }; //no funciona (falta desviar la salida)
         //String[] cmd = { "/bin/sh", "-c", "play " + filePath + File.separator + fileName + " 2>/dev/tty"}; //funciona pero no se puede parar
         String[] cmd = { "/bin/sh", "-c", "play " + filePath + File.separator + fileName + " 2> output.txt"}; // sigue sin poder pararse, pero crear un txt qcon el que podemos ver cómo es la salida que tendremos que parsear
         try {
             Runtime.getRuntime().exec(cmd);
             System.out.println("Reproduciendo...");
         } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }*/
-    // Método para reproducir un archivo de audio 
-    /*public void play(String fileName, String filePath) {
-        try {
-            // Construir la lista de comandos para reproducir el archivo
-            ProcessBuilder pb = new ProcessBuilder("play", filePath + File.separator + fileName);
-            // Redirigir la salida y el error estándar al flujo de salida del proceso actual
-            //pb.redirectErrorStream(true);
-            // Iniciar el proceso
-            Process process = pb.start();
-            // Esperar a que el proceso termine
-            int exitCode = process.waitFor();
-            // Verificar si el proceso finalizó correctamente
-            if (exitCode == 0) {
-                System.out.println("Reproducción finalizada exitosamente.");
-            } else {
-                System.out.println("Ocurrió un error durante la reproducción.");
-            }
-        } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
     }*/
