@@ -68,13 +68,16 @@ public class Controller extends BufferedReader {
          switch (actualChar) {
 
              case KEY.UP_VAL:
-                 Model.rightArrow();
+                 Model.up();
                  break;
 
              case KEY.DOWN_VAL:
-                 Model.leftArrow();
+                 Model.down();
                  break;
 
+            case KEY.ENTER:
+                 Model.play();
+                 break;
          }
      }
      unsetRaw();
