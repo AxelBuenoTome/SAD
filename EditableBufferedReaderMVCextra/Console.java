@@ -73,7 +73,7 @@ public class Console implements Observer {
         int c1 = c;
         int l1 = l;
         for (int i = line.getCursorPosition(); i < text.length(); i++) {
-            System.out.print(text.charAt(i-1));
+            System.out.print(text.charAt(i - 1));
             c1++;
             if (c1 >= limit) {
                 c1 = 0;
@@ -118,8 +118,8 @@ public class Console implements Observer {
                 ins = !ins;
                 break;
             case KEY.END_VAL:
-                c = (text.length() % limit)+co-1;
-                l = (text.length() / limit)+lo;
+                c = (text.length() % limit) + co - 1;
+                l = (text.length() / limit) + lo;
                 System.out.print("\033[" + l + ";" + c + "H");
                 break;
             case KEY.HOME_VAL:
