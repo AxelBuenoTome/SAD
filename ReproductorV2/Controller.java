@@ -3,12 +3,23 @@ package ReproductorV2;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 
 public class Controller extends BufferedReader {
 
-    public Controller(InputStreamReader in) {
+    private Model model;
+
+    public Controller(InputStreamReader in, Model model) {
         super(in);
+        this.model = model;
+        initApplication();
     }
+
+    
+    public void initApplication(){
+        model.createSongList();
+    }
+
 
     public void setRaw() {
         String[] cmd = { "/bin/sh", "-c", "stty -echo raw </dev/tty" };
@@ -42,15 +53,11 @@ public class Controller extends BufferedReader {
   }
 
   private boolean match(String escape) throws IOException{
-      //lo primero es guardar el estado actual del lector con mark(), perteneciente a BufferedReader
-      //indicamos el tamaño del String escape, para luego volver atrás la misma cifra
       mark(escape.length());
       try{
           for(int i=0 ; i<escape.length(); i++){
               int ch = super.read();
-              //miramos si el caracter leído coincide con el String escape, caracter a caracter.
               if(ch != escape.charAt(i)){
-                  //si no hay match usamos el reset y devolvemos false (para el backtracking)
                   reset();
                   return false;
               }
@@ -61,24 +68,24 @@ public class Controller extends BufferedReader {
 
   }
 
- public String readLine() throws IOException {
+ public void processInput() throws IOException {
      setRaw();
      int actualChar;
-     while ((actualChar = this.read()) != KEY.ENTER) {
-         switch (actualChar) {
+     while ((actualChar = this.read()) != -1) { //El Ctrl+D es el EOF que es null o -1 
+        switch (actualChar) {
 
              case KEY.UP_VAL:
-                 Model.up();
+                 model.up();
                  break;
 
              case KEY.DOWN_VAL:
-                 Model.down();
+                 model.down();
                  break;
 
             case KEY.ENTER:
-                 Model.play();
+                 model.play();
                  break;
-         }
+        }
      }
      unsetRaw();
  }
