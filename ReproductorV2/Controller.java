@@ -15,11 +15,9 @@ public class Controller extends BufferedReader {
         initApplication();
     }
 
-    
-    public void initApplication(){
+    public void initApplication() {
         model.createSongList();
     }
-
 
     public void setRaw() {
         String[] cmd = { "/bin/sh", "-c", "stty -echo raw </dev/tty" };
@@ -39,54 +37,55 @@ public class Controller extends BufferedReader {
         }
     }
 
-  @Override
-  public int read() throws IOException {
-      int inputChar;
-      if (match(KEY.UP_STR)){
-          return KEY.UP_VAL;
-      }
-      if (match(KEY.DOWN_STR)){
-          return KEY.DOWN_VAL;
-      }
-      inputChar = super.read();
-      return inputChar; 
-  }
-
-  private boolean match(String escape) throws IOException{
-      mark(escape.length());
-      try{
-          for(int i=0 ; i<escape.length(); i++){
-              int ch = super.read();
-              if(ch != escape.charAt(i)){
-                  reset();
-                  return false;
-              }
-          }
-          return true;
-      }finally{
-      }
-
-  }
-
- public void processInput() throws IOException {
-     setRaw();
-     int actualChar;
-     while ((actualChar = this.read()) != -1) { //El Ctrl+D es el EOF que es null o -1 
-        switch (actualChar) {
-
-             case KEY.UP_VAL:
-                 model.up();
-                 break;
-
-             case KEY.DOWN_VAL:
-                 model.down();
-                 break;
-
-            case KEY.ENTER:
-                 model.play();
-                 break;
+    @Override
+    public int read() throws IOException {
+        int inputChar;
+        if (match(KEY.UP_STR)) {
+            return KEY.UP_VAL;
         }
-     }
-     unsetRaw();
- }
+        if (match(KEY.DOWN_STR)) {
+            return KEY.DOWN_VAL;
+        }
+
+        inputChar = super.read();
+        return inputChar;
+    }
+
+    private boolean match(String escape) throws IOException {
+        mark(escape.length());
+        try {
+            for (int i = 0; i < escape.length(); i++) {
+                int ch = super.read();
+                if (ch != escape.charAt(i)) {
+                    reset();
+                    return false;
+                }
+            }
+            return true;
+        } finally {
+        }
+
+    }
+
+    public void processInput() throws IOException {
+        setRaw();
+        int actualChar;
+        while ((actualChar = this.read()) != 4) { // El Ctrl+D es el EOF que es null o -1
+            switch (actualChar) {
+
+                case KEY.UP_VAL:
+                    model.up();
+                    break;
+
+                case KEY.DOWN_VAL:
+                    model.down();
+                    break;
+
+                case KEY.ENTER:
+                    model.play();
+                    break;
+            }
+        }
+        unsetRaw();
+    }
 }
