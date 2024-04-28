@@ -20,5 +20,11 @@ public class KEY {
     public static final String DOWN_STR = "\033[B";
     public static final String RIGHT_STR = "\033[C";
     public static final String LEFT_STR = "\033[D";
+
+    //Claves para el tipo de objeto
+    public static final int POSSITION = -10;
+    public static final int PROGRESS = -11;
 }
+
+
 

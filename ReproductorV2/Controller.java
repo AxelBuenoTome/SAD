@@ -70,7 +70,7 @@ public class Controller extends BufferedReader {
     public void processInput() throws IOException {
         setRaw();
         int actualChar;
-        while ((actualChar = this.read()) != 4) { // El Ctrl+D es el EOF que es null o -1
+        while ((actualChar = this.read()) != 4) { 
             switch (actualChar) {
 
                 case KEY.UP_VAL:

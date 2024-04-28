@@ -18,8 +18,15 @@ public class View implements Observer {
 
     @Override
     public void update(Observable o, Object arg) {
-        refreshList((int) arg);
-
+        UpdateInfo updateInfo = (UpdateInfo) arg; //convertimos el objeto a UpdateInfo
+        switch (updateInfo.getType()) {
+            case KEY.POSSITION:
+                refreshList((int) updateInfo.getValue()); //convertimos la información en integer
+                break;
+            case KEY.PROGRESS:
+                displayProgress((String) updateInfo.getValue()); //convertimos la información en String
+                break;
+        }
     }
 
     public void refreshList(int position) {
@@ -37,6 +44,10 @@ public class View implements Observer {
             }
             System.out.println(songs.get(index));
         }
+        System.out.print('\r');
+    }
+    public void displayProgress(String progress) {
+        System.out.print("Progreso de reproducción: " + progress + "%");
         System.out.print('\r');
     }
 }

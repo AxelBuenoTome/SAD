@@ -6,6 +6,8 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Model extends Observable {
     
@@ -14,6 +16,10 @@ public class Model extends Observable {
     private ArrayList<String> songs;
     // añadimos el Arraylist de observers
     private ArrayList<Observer> observers;
+    //creamos el proceso para poder destruirlo
+    private Process process = null;
+    //creamos el hilo para poder destruirlo
+    private Thread parseThread = null;
 
     //constructor de la clase model
     public Model(){
@@ -42,19 +48,15 @@ public class Model extends Observable {
 
     //versión inicial del up
     public void up(){
-        if(position>0){
-            position --;
+        position = (position - 1 + songs.size()) % songs.size();
             setChanged();  // Marca el Observable como modificado
-            notifyObservers(position);  // le pasa la posición 
-        }
+            notifyObservers(new UpdateInfo(KEY.POSSITION, position));  // le pasa la posición 
     }
     //versión inicial del down
     public void down(){
-        if(position<songs.size()){
-            position++;
+            position = (position + 1) % songs.size();
             setChanged();  // Marca el Observable como modificado
-            notifyObservers(position);  // le pasa la posición 
-        }
+            notifyObservers(new UpdateInfo(KEY.POSSITION, position));  // le pasa la posición 
     }
     public void createSongList() {
         File directory = new File(filePath);
@@ -67,7 +69,7 @@ public class Model extends Observable {
                         songs.add(file.getName());
                     }
                     setChanged();  // Marca el Observable como modificado
-                    notifyObservers(position);  // le pasa la posición 
+                    notifyObservers(new UpdateInfo(KEY.POSSITION, position));  // le pasa la posición 
                 } else {
                     throw new IOException("El directorio está vacío.");
                 }
@@ -86,27 +88,41 @@ public class Model extends Observable {
     
     public void play() {
         try {
+            if (process!=null){
+                process.destroy();
+            }
             ProcessBuilder pb = new ProcessBuilder("play", filePath + File.separator + getSongName(position));
             pb.redirectErrorStream(true);
-            Process process = pb.start();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-            /*
-            //PROVISIONAL MIENTRAS NO HAYA PARSING
-            // Leemos cada linea del proceso
-            String line;
-            while ((line = reader.readLine()) != null) { 
-                // Procesamos cada línea
-                System.out.println(line); // Imprimirmos la línea (pq no hay parsing todavía)
-            }
-            */
-            int exitCode = process.waitFor();
-            if (exitCode == 0) {
-                System.out.println("Reproducción finalizada");
-            } else {
-                System.out.println("Error durante el play.");
-            }
-        } catch (IOException | InterruptedException e) {
+            process = pb.start();
+            
+            //Creamos el hilo que se encargará de parsear
+            parseThread = new Thread(new Runnable() {
+                public void run() {
+                    try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
+                        String line;
+                        while ((line = reader.readLine()) != null) {
+                            parseProgress(line);
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+            parseThread.start();
+
+        } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    public void parseProgress(String line){
+    Pattern pattern = Pattern.compile("In:(\\d+\\.\\d+)%"); //usamos expresiones regulares
+    Matcher matcher = pattern.matcher(line);
+    if (matcher.find()) {
+        String progressString = matcher.group(1); 
+        //float progress = Float.parseFloat(progressString);
+        setChanged(); 
+        notifyObservers(new UpdateInfo(KEY.PROGRESS, progressString)); 
         }
     }
 }
