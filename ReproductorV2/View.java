@@ -47,7 +47,7 @@ public class View implements Observer {
         System.out.print('\r');
     }
     public void displayProgress(String progress) {
-        System.out.print("Progreso de reproducción: " + progress + "%");
+        System.out.print("Progreso: " + progress + "%");
         System.out.print('\r');
     }
 }

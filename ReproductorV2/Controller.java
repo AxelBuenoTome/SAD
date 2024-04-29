@@ -86,6 +86,8 @@ public class Controller extends BufferedReader {
                     break;
             }
         }
+        //creo que hemos de detener al hilo para poder cerrar el programa
+        model.stopThread();
         unsetRaw();
     }
 }

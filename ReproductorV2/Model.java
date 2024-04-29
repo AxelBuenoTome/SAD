@@ -88,6 +88,7 @@ public class Model extends Observable {
     
     public void play() {
         try {
+            stopThread();
             if (process!=null){
                 process.destroy();
             }
@@ -100,7 +101,9 @@ public class Model extends Observable {
                 public void run() {
                     try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
                         String line;
-                        while ((line = reader.readLine()) != null) {
+                        //while ((line = reader.readLine()) != null) {
+                        while (!parseThread.isInterrupted() && (line = reader.readLine()) != null) {
+
                             parseProgress(line);
                         }
                     } catch (IOException e) {
@@ -123,6 +126,17 @@ public class Model extends Observable {
         //float progress = Float.parseFloat(progressString);
         setChanged(); 
         notifyObservers(new UpdateInfo(KEY.PROGRESS, progressString)); 
+        }
+    }
+    //método para finalizar el thread.
+    public void stopThread(){
+        if (parseThread != null){
+            parseThread.interrupt();
+            try {
+                parseThread.join();  // Espera a que el hilo termine
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 }
