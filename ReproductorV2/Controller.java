@@ -84,6 +84,9 @@ public class Controller extends BufferedReader {
                 case KEY.ENTER:
                     model.play();
                     break;
+                case 'p':
+                    model.pause();
+                    break;
             }
         }
         //creo que hemos de detener al hilo para poder cerrar el programa
