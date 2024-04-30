@@ -14,6 +14,7 @@ public class Model extends Observable {
     private int position;
     private String filePath;
     private String currentMinute = "00:00:00.00"; //iniciamos a 0
+    private String currentSong;
     private ArrayList<String> songs;
     // añadimos el Arraylist de observers
     private ArrayList<Observer> observers;
@@ -52,14 +53,14 @@ public class Model extends Observable {
         position = (position - 1 + songs.size()) % songs.size();
             setChanged();  // Marca el Observable como modificado
             notifyObservers(new UpdateInfo(KEY.POSSITION, position));  // le pasa la posición 
-            //songInfo();
+            songInfo();
     }
     //versión inicial del down
     public void down(){
             position = (position + 1) % songs.size();
             setChanged();  // Marca el Observable como modificado
             notifyObservers(new UpdateInfo(KEY.POSSITION, position));  // le pasa la posición 
-            //songInfo();
+            songInfo();
     }
     public void createSongList() {
         File directory = new File(filePath);
@@ -73,6 +74,7 @@ public class Model extends Observable {
                     }
                     setChanged();  // Marca el Observable como modificado
                     notifyObservers(new UpdateInfo(KEY.POSSITION, position));  // le pasa la posición 
+                    songInfo();
                 } else {
                     throw new IOException("El directorio está vacío.");
                 }
@@ -98,7 +100,7 @@ public class Model extends Observable {
             ProcessBuilder pb = new ProcessBuilder("play", filePath + File.separator + getSongName(position));
             pb.redirectErrorStream(true);
             process = pb.start();
-            
+            currentSong = getSongName(position);
             //Creamos el hilo que se encargará de parsear
             parseThread = new Thread(new Runnable() {
                 public void run() {
@@ -163,7 +165,7 @@ public class Model extends Observable {
             //si no hay proceso corriendo (despausar) --> crear un proceso nuevo a partir del minuto guardado
             //es como el play, pero cambia el trim
             else{
-                ProcessBuilder pb = new ProcessBuilder("play", filePath + File.separator + getSongName(position), "trim", currentMinute);
+                ProcessBuilder pb = new ProcessBuilder("play", filePath + File.separator + currentSong, "trim", currentMinute);
                 pb.redirectErrorStream(true);
                 process = pb.start();
                 
@@ -256,6 +258,8 @@ public class Model extends Observable {
         }
 
         Song song = new Song(title, artist, album, duration, genre, year);
+        setChanged(); 
+        notifyObservers(new UpdateInfo(KEY.SONG, song)); 
         /*
         // Imprimir la información de la canción
         System.out.println("Información de la canción:");

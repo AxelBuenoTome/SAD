@@ -26,6 +26,9 @@ public class View implements Observer {
             case KEY.PROGRESS:
                 displayProgress((String) updateInfo.getValue()); //convertimos la información en String
                 break;
+            case KEY.SONG:
+                refreshSong((Song)updateInfo.getValue()); //actualizamos la info de la canción
+                break;
         }
     }
 
@@ -49,5 +52,17 @@ public class View implements Observer {
     public void displayProgress(String progress) {
         System.out.print("Progreso: " + progress + "%");
         System.out.print('\r');
+    }
+    public void refreshSong(Song song){/*
+        System.out.println("Información de la canción:");
+        System.out.println("Título: " + song.getTitle());
+        System.out.println("Artista: " + song.getArtist());
+        System.out.println("Álbum: " + song.getAlbum());
+        System.out.println("Género: " + song.getGenre());
+        System.out.println("Duración: " + song.getDuration());
+        System.out.println("Año: " + song.getYear());
+        System.out.print('\r');
+        No sé hacerlo XD, esto funciona pero se printa en diagonal
+        */
     }
 }

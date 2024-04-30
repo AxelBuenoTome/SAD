@@ -24,6 +24,8 @@ public class KEY {
     //Claves para el tipo de objeto
     public static final int POSSITION = -10;
     public static final int PROGRESS = -11;
+    public static final int SONG = -12;
+
 }
 
 
