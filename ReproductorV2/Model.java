@@ -26,7 +26,7 @@ public class Model extends Observable {
     //constructor de la clase model
     public Model(){
         position = 0;
-        filePath = "//mnt/c/Users/Axel/OneDrive/Documents/UPC/SAD/canciones"; ///mnt/c/Users/Pepus/Desktop/SAD/musica
+        filePath = "/mnt/c/Users/Pepus/OneDrive/Escritorio/SAD/music/"; // /mnt/c/Users/Axel/OneDrive/Documents/UPC/SAD/canciones
         songs = new ArrayList<>(); //En el main se llama al controlador, y este al model para crearlo.
         // añadimos el Arraylist de observers
         observers = new ArrayList<>();

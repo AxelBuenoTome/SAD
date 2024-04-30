@@ -9,6 +9,7 @@ public class View implements Observer {
 
     private Model model;
     private boolean first;
+    private int Nsongs;
 
     public View(Model model) {
         this.model = model;
@@ -34,6 +35,7 @@ public class View implements Observer {
 
     public void refreshList(int position) {
         ArrayList<String> songs = model.getSongs();
+        Nsongs =songs.size();
         if (!first) {
             System.out.print("\033[" + songs.size() + "A");
         }
@@ -50,19 +52,18 @@ public class View implements Observer {
         System.out.print('\r');
     }
     public void displayProgress(String progress) {
-        System.out.print("Progreso: " + progress + "%");
-        System.out.print('\r');
+        System.out.print("\rProgreso: " + progress + "%"+'\r');
     }
-    public void refreshSong(Song song){/*
-        System.out.println("Información de la canción:");
-        System.out.println("Título: " + song.getTitle());
-        System.out.println("Artista: " + song.getArtist());
-        System.out.println("Álbum: " + song.getAlbum());
-        System.out.println("Género: " + song.getGenre());
-        System.out.println("Duración: " + song.getDuration());
-        System.out.println("Año: " + song.getYear());
-        System.out.print('\r');
-        No sé hacerlo XD, esto funciona pero se printa en diagonal
-        */
+    public void refreshSong(Song song){
+        System.out.print("\033[" + Nsongs + "A");
+        System.out.println("\r\t\t\t\t\t" + "Información de la canción:");
+        System.out.println("\r\t\t\t\t\t" + "Título: " + song.getTitle());
+        System.out.println("\r\t\t\t\t\t" + "Artista: " + song.getArtist());
+        System.out.println("\r\t\t\t\t\t" + "Álbum: " + song.getAlbum());
+        System.out.println("\r\t\t\t\t\t" + "Género: " + song.getGenre());
+        System.out.println("\r\t\t\t\t\t" + "Duración: " + song.getDuration());
+        System.out.println("\r\t\t\t\t\t" + "Año: " + song.getYear());
+        System.out.print("\033[" + 7 + "A");
+        System.out.print("\033[" + Nsongs + "B\r");
     }
 }
