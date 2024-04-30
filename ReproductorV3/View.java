@@ -1,69 +1,83 @@
 package ReproductorV3;
 
-import java.util.Observer;
-import java.io.IOException;
+import com.googlecode.lanterna.TerminalFacade;
+import com.googlecode.lanterna.gui2.*;
+import com.googlecode.lanterna.gui2.BorderLayout;
+import com.googlecode.lanterna.gui2.Button;
+import com.googlecode.lanterna.gui2.Component;
+import com.googlecode.lanterna.gui2.Direction;
+import com.googlecode.lanterna.gui2.Label;
+import com.googlecode.lanterna.gui2.Panel;
+import com.googlecode.lanterna.gui2.TextBox;
+import com.googlecode.lanterna.gui2.Window;
+import com.googlecode.lanterna.gui2.LinearLayout;
+
 import java.util.ArrayList;
-import java.util.Observable;
+import java.util.List;
 
-public class View implements Observer {
+public class View extends BasicWindow {
+    private static final int NUM_OF_LABELS = 20;
+    private final List<Label> labelList = new ArrayList<>();
+    private int selectedLabelIndex = -1;
+    private final Panel mainPanel;
 
-    private Model model;
-    private boolean first;
-    private int Nsongs;
+    public View(String title) {
+        super(title);
+        setHints(List.of(Window.Hint.CENTERED));
 
-    public View(Model model) {
-        this.model = model;
-        model.addObserver(this);
-        first = true;
-    }
+        mainPanel = new Panel(new BorderLayout());
 
-    @Override
-    public void update(Observable o, Object arg) {
-        UpdateInfo updateInfo = (UpdateInfo) arg; //convertimos el objeto a UpdateInfo
-        switch (updateInfo.getType()) {
-            case KEY.POSSITION:
-                refreshList((int) updateInfo.getValue()); //convertimos la información en integer
-                break;
-            case KEY.PROGRESS:
-                displayProgress((String) updateInfo.getValue()); //convertimos la información en String
-                break;
-            case KEY.SONG:
-                refreshSong((Song)updateInfo.getValue()); //actualizamos la info de la canción
-                break;
+        Panel leftPanel = new Panel();
+        leftPanel.setLayoutManager(new LinearLayout(Direction.VERTICAL));
+
+        for (int i = 0; i < NUM_OF_LABELS; i++) {
+            Label label = new Label("Label " + (i + 1));
+            labelList.add(label);
+            leftPanel.addComponent(label);
+        }
+
+        Panel rightPanel = new Panel();
+        rightPanel.setLayoutManager(new LinearLayout(Direction.VERTICAL));
+
+        TextBox textBox = new TextBox().addTo(rightPanel);
+        textBox.setReadOnly(true);
+        textBox.setText("Right side text area");
+
+        mainPanel.addComponent(leftPanel, BorderLayout.Location.LEFT);
+        mainPanel.addComponent(rightPanel, BorderLayout.Location.RIGHT);
+
+        setComponent(mainPanel);
+
+        // Event handling
+        for (int i = 0; i < NUM_OF_LABELS; i++) {
+            int index = i;
+            labelList.get(i).addListener((Component.Listener<Label>) (label, labelMouseEvent) -> {
+                if (labelMouseEvent.getButton() == 1) { // Left mouse button
+                    selectLabel(index);
+                    updateRightText("Label " + (index + 1) + " clicked");
+                }
+            });
         }
     }
 
-    public void refreshList(int position) {
-        ArrayList<String> songs = model.getSongs();
-        Nsongs =songs.size();
-        if (!first) {
-            System.out.print("\033[" + songs.size() + "A");
+    private void selectLabel(int index) {
+        if (selectedLabelIndex != -1) {
+            labelList.get(selectedLabelIndex).setBackgroundColor(TextColor.ANSI.DEFAULT);
         }
-        first = false;
-        for (int index = 0; index < songs.size(); index++) {
-            System.out.print('\r');
-            if (index == position) {
-                System.out.print("-->");
-            } else {
-                System.out.print("   ");
-            }
-            System.out.println(songs.get(index));
-        }
-        System.out.print('\r');
+        selectedLabelIndex = index;
+        labelList.get(index).setBackgroundColor(TextColor.ANSI.BLUE);
     }
-    public void displayProgress(String progress) {
-        System.out.print("\rProgreso: " + progress + "%"+'\r');
+
+    private void updateRightText(String newText) {
+        // Get the right-side text area
+        TextBox textBox = (TextBox) ((Panel) ((BorderLayout) mainPanel.getLayoutManager()).getComponent(BorderLayout.Location.RIGHT)).getComponent(0);
+        // Update the text
+        textBox.setText(newText);
     }
-    public void refreshSong(Song song){
-        System.out.print("\033[" + Nsongs + "A");
-        System.out.println("\r\t\t\t\t\t" + "\033[K" + "Información de la canción:");
-        System.out.println("\r\t\t\t\t\t" + "\033[K" + "Título: " + song.getTitle());
-        System.out.println("\r\t\t\t\t\t" + "\033[K" + "Artista: " + song.getArtist());
-        System.out.println("\r\t\t\t\t\t" + "\033[K" + "Álbum: " + song.getAlbum());
-        System.out.println("\r\t\t\t\t\t" + "\033[K" + "Género: " + song.getGenre());
-        System.out.println("\r\t\t\t\t\t" + "\033[K" + "Duración: " + song.getDuration());
-        System.out.println("\r\t\t\t\t\t" + "\033[K" + "Año: " + song.getYear());
-        System.out.print("\033[" + 7 + "A");
-        System.out.print("\033[" + Nsongs + "B\r");
+
+    public static void main(String[] args) {
+        View view = new View("Scrollable Labels Example");
+        MultiWindowTextGUI gui = new MultiWindowTextGUI(TerminalFacade.createTerminal());
+        gui.addWindowAndWait(view);
     }
 }
