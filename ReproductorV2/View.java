@@ -56,13 +56,13 @@ public class View implements Observer {
     }
     public void refreshSong(Song song){
         System.out.print("\033[" + Nsongs + "A");
-        System.out.println("\r\t\t\t\t\t" + "Información de la canción:");
-        System.out.println("\r\t\t\t\t\t" + "Título: " + song.getTitle());
-        System.out.println("\r\t\t\t\t\t" + "Artista: " + song.getArtist());
-        System.out.println("\r\t\t\t\t\t" + "Álbum: " + song.getAlbum());
-        System.out.println("\r\t\t\t\t\t" + "Género: " + song.getGenre());
-        System.out.println("\r\t\t\t\t\t" + "Duración: " + song.getDuration());
-        System.out.println("\r\t\t\t\t\t" + "Año: " + song.getYear());
+        System.out.println("\r\t\t\t\t\t" + "\033[K" + "Información de la canción:");
+        System.out.println("\r\t\t\t\t\t" + "\033[K" + "Título: " + song.getTitle());
+        System.out.println("\r\t\t\t\t\t" + "\033[K" + "Artista: " + song.getArtist());
+        System.out.println("\r\t\t\t\t\t" + "\033[K" + "Álbum: " + song.getAlbum());
+        System.out.println("\r\t\t\t\t\t" + "\033[K" + "Género: " + song.getGenre());
+        System.out.println("\r\t\t\t\t\t" + "\033[K" + "Duración: " + song.getDuration());
+        System.out.println("\r\t\t\t\t\t" + "\033[K" + "Año: " + song.getYear());
         System.out.print("\033[" + 7 + "A");
         System.out.print("\033[" + Nsongs + "B\r");
     }
