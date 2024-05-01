@@ -2,6 +2,7 @@ package ReproductorV3;
 
 import com.googlecode.lanterna.terminal.Terminal;
 import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
+import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.TerminalTextUtils;
 import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.gui2.*;
@@ -17,8 +18,9 @@ import java.util.Observer;
 public class View extends BasicWindow implements Observer{
     private final List<Button> songs = new ArrayList<>();
     private static Button selectedSong = null;
-    private final Panel mainPanel;
+    private final Panel mainPanel, leftPanel, rightPanel;
     private Model model;
+    private Label titulo, artista, album, genero, duracion, año;
 
     public View(Model model) {
         super();
@@ -27,42 +29,35 @@ public class View extends BasicWindow implements Observer{
 
         setHints(List.of(Window.Hint.CENTERED));
         mainPanel = new Panel(new BorderLayout());
+        leftPanel = new Panel(new LinearLayout());
+        rightPanel = new Panel(new LinearLayout());
 
+        //this.setFixedSize(new TerminalSize(50, 20));
         this.createWidgets();
     }
 
     private void createWidgets() {
 
-        Panel leftPanel = new Panel();
-        leftPanel.setLayoutManager(new LinearLayout(Direction.VERTICAL));
+        for (int i=0; i< model.getSongs().size(); i++) {
+            Button song = new Button(model.getSongName(i)).addTo(leftPanel);
+            song.addListener( (onClick) -> {
+                model.setPosition(model.getSongs().indexOf(song.getLabel()));
+                model.play();
+            });
+        }
 
-        Panel rightPanel = new Panel();
-        rightPanel.setLayoutManager(new LinearLayout(Direction.VERTICAL));
-
-        TextBox textBox = new TextBox().addTo(rightPanel);
-        textBox.setReadOnly(true);
-        textBox.setText("texto prueva");
+        new Label("Información de la canción:").addTo(rightPanel);
+        titulo = new Label("Título: ").addTo(rightPanel);
+        artista = new Label("Artista: ").addTo(rightPanel);
+        album = new Label("Álbum: ").addTo(rightPanel);
+        genero = new Label("Género: ").addTo(rightPanel);
+        duracion = new Label("Duración: ").addTo(rightPanel);
+        año = new Label("Año: ").addTo(rightPanel);
 
         mainPanel.addComponent(leftPanel, BorderLayout.Location.LEFT);
         mainPanel.addComponent(rightPanel, BorderLayout.Location.RIGHT);
 
         setComponent(mainPanel);
-
-        for (String songString : model.getSongs()) {
-            Button song = new Button(songString);
-            song.addListener( (onClick) -> {
-                if (selectedSong != null) {
-                    // Deselect the currently selected button
-                    selectedSong = null;
-                }
-
-                // Select the new button
-                selectedSong = song;
-                model.setPosition(model.getSongs().indexOf(song.getLabel()));
-            });
-            songs.add(song);
-            leftPanel.addComponent(song);
-        }
     }
 
     public void setupScreen() {
@@ -78,17 +73,35 @@ public class View extends BasicWindow implements Observer{
     }
 
     // funcion para camniar el texto a la derecha y poner la info
-    private void updateRightText() {
-        // Get the right-side text area
-        // Update the text
+
+    private void displayProgress(String prores){
+
     }
 
-    private void updateBar(){
-
+    private void refreshSong(Song song) {
+        titulo = new Label("Título: " + song.getTitle()).addTo(rightPanel);
+        artista = new Label("Artista: " + song.getArtist()).addTo(rightPanel);
+        album = new Label("Álbum: " + song.getAlbum()).addTo(rightPanel);
+        genero = new Label("Género: " + song.getGenre()).addTo(rightPanel);
+        duracion = new Label("Duración: " + song.getDuration()).addTo(rightPanel);
+        año = new Label("Año: " + song.getYear()).addTo(rightPanel);
     }
 
     @Override
     public void update(Observable o, Object arg) {
+        UpdateInfo updateInfo = (UpdateInfo) arg; //convertimos el objeto a UpdateInfo
+        switch (updateInfo.getType()) {
+            case KEY.POSSITION:
+                //refreshList((int) updateInfo.getValue()); //convertimos la información en integer
+                break;
+            case KEY.PROGRESS:
+                displayProgress((String) updateInfo.getValue()); //convertimos la información en String
+                break;
+            case KEY.SONG:
+                refreshSong((Song)updateInfo.getValue()); //actualizamos la info de la canción
+                break;
+        }
     }
+    
 
 }
