@@ -41,6 +41,11 @@ public class Model extends Observable {
     public int getPosition(){
         return position;
     }
+
+    public void setPosition(int pos){
+        position=pos;
+    }
+
     //método a priori innecesario
     public String getFilePath(){
         return filePath;

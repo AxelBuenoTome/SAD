@@ -8,6 +8,7 @@ public class Application {
         try {
             Model model = new Model();
             View view = new View(model);
+            view.setupScreen();
             InputStreamReader in = new InputStreamReader(System.in);
             Controller controller = new Controller(in, model);
             controller.processInput();  // Bucle de entrada del teclado
