@@ -16,13 +16,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class View extends BasicWindow {
-    private static final int NUM_OF_LABELS = 20;
-    private final List<Label> labelList = new ArrayList<>();
-    private int selectedLabelIndex = -1;
+    private final List<Label> songs = new ArrayList<>();
+    private int seletedSong = -1;
     private final Panel mainPanel;
+    private Model model;
 
-    public View(String title) {
-        super(title);
+    public View(Model model) {
+        super();
+        this.model = model;
         setHints(List.of(Window.Hint.CENTERED));
 
         mainPanel = new Panel(new BorderLayout());
@@ -30,9 +31,9 @@ public class View extends BasicWindow {
         Panel leftPanel = new Panel();
         leftPanel.setLayoutManager(new LinearLayout(Direction.VERTICAL));
 
-        for (int i = 0; i < NUM_OF_LABELS; i++) {
-            Label label = new Label("Label " + (i + 1));
-            labelList.add(label);
+        for (int i = 0; i < model.getSongs().size(); i++) {
+            Label label = new Label(model.getSongName(i));
+            songs.add(label);
             leftPanel.addComponent(label);
         }
 
@@ -49,30 +50,33 @@ public class View extends BasicWindow {
         setComponent(mainPanel);
 
         // Event handling
-        for (int i = 0; i < NUM_OF_LABELS; i++) {
+        for (int i = 0; i < model.getSongs().size(); i++) {
             int index = i;
-            labelList.get(i).addListener((Component.Listener<Label>) (label, labelMouseEvent) -> {
+            songs.get(i).addListener((Component.Listener<Label>) (label, labelMouseEvent) -> {
                 if (labelMouseEvent.getButton() == 1) { // Left mouse button
                     selectLabel(index);
-                    updateRightText("Label " + (index + 1) + " clicked");
+                    updateRightText();
                 }
             });
         }
     }
 
+    //funcion q seleccióna una cancion y la cambia la apariencia gráfica
+    //guardamos el indice de la canción selecciónada en
     private void selectLabel(int index) {
-        if (selectedLabelIndex != -1) {
-            labelList.get(selectedLabelIndex).setBackgroundColor(TextColor.ANSI.DEFAULT);
+        if (seletedSong != -1) { //este -1 est solo para la primera vez q no hay ninguna cancion seleccionada
+            songs.get(seletedSong).setBackgroundColor(TextColor.ANSI.DEFAULT);
         }
-        selectedLabelIndex = index;
+        seletedSong = index;
         labelList.get(index).setBackgroundColor(TextColor.ANSI.BLUE);
     }
 
-    private void updateRightText(String newText) {
+    //funcion para camniar el texto a la derecha y poner la info
+    private void updateRightText() {
         // Get the right-side text area
-        TextBox textBox = (TextBox) ((Panel) ((BorderLayout) mainPanel.getLayoutManager()).getComponent(BorderLayout.Location.RIGHT)).getComponent(0);
+        TextBox textoDerecha = (TextBox) ((Panel) ((BorderLayout) mainPanel.getLayoutManager()).getComponent(BorderLayout.Location.RIGHT)).getComponent(0);
         // Update the text
-        textBox.setText(newText);
+        textoDerecha.setText();
     }
 
     public static void main(String[] args) {
