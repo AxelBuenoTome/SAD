@@ -10,7 +10,7 @@ public class Application {
             InputStreamReader in = new InputStreamReader(System.in);
             Controller controller = new Controller(in, model);
             View view = new View(model);
-            view.setupScreen();
+            //view.setupScreen();
             controller.processInput();  // Bucle de entrada del teclado
         } catch (Exception e) {
             System.err.println("Error al iniciar la aplicación: " + e.getMessage());
