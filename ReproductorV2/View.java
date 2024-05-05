@@ -53,9 +53,39 @@ public class View implements Observer {
         }
         System.out.print('\r');
     }
-    public void displayProgress(String progress) {
+    /*public void displayProgress(String progress) {
         System.out.print("\rProgreso: " + progress + "%"+'\r');
+    }*/
+    public void displayProgress(String progress) {
+        int totalLength = model.countColumns() - 30; // Define la longitud total de la barra de progreso
+        float progressPercentage = Float.parseFloat(progress); // Convierte el String a float
+        int fullBlocks = (int) (progressPercentage * totalLength / 100); // Cálculo de bloques completos
+        int partialBlockPercentage = (int) ((progressPercentage * totalLength) % 100) / (100 / 8); // Cálculo de la fracción de bloque
+    
+        // Caracteres Unicode para bloques parciales (de menos lleno a más lleno)
+        String[] blockFractions = {" ", "▏", "▎", "▍", "▌", "▋", "▊", "▉", "█"};
+    
+        StringBuilder progressBar = new StringBuilder();
+        progressBar.append("\033[31m"); // Comienza con color rojo
+        for (int i = 0; i < fullBlocks; i++) {
+            progressBar.append("█"); // Bloque completo
+        }
+        if (fullBlocks < totalLength) {
+            progressBar.append(blockFractions[partialBlockPercentage]); // Añade el bloque parcial
+        }
+        for (int i = fullBlocks + 1; i < totalLength; i++) {
+            progressBar.append(" "); // Espacios para la parte vacía
+        }
+        progressBar.append("\033[0m"); // Resetea el color
+    
+        // Imprimir la barra de progreso con el porcentaje y limpiar el resto de la línea
+        System.out.print("\r" + progressBar + String.format("%.2f", progressPercentage) + "%" + "\033[K");
+        System.out.flush(); // Asegura que todo se imprima correctamente en la consola
     }
+    
+    
+    
+
     public void refreshSong(int position){
         Song song = model.getSong(position);
         System.out.print("\033[" + Nsongs + "A");

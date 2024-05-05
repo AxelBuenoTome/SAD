@@ -293,4 +293,16 @@ public class Model extends Observable {
         System.out.println("Año: " + year);*/
         return new Song(title, artist, album, duration, genre, year, fileName); 
     }
+    public int countColumns(){
+        try {
+            Process p = Runtime.getRuntime().exec(new String[] {"/bin/sh", "-c", "tput cols 2>/dev/tty"});
+            BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+            String line = reader.readLine(); // Lee el resultado
+            return Integer.parseInt(line);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        //funciona bien, comprobado conSystem.out.println(numColumns);
+        return 50;
+    }
 }
