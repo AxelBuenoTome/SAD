@@ -23,18 +23,20 @@ public class View implements Observer {
         switch (updateInfo.getType()) {
             case KEY.POSSITION:
                 refreshList((int) updateInfo.getValue()); //convertimos la información en integer
+                refreshSong((int) updateInfo.getValue());
                 break;
             case KEY.PROGRESS:
                 displayProgress((String) updateInfo.getValue()); //convertimos la información en String
                 break;
             case KEY.SONG:
-                refreshSong((Song)updateInfo.getValue()); //actualizamos la info de la canción
+            //System.out.println("aquí llegamos");
+                //refreshSong((Song)updateInfo.getValue()); //actualizamos la info de la canción
                 break;
         }
     }
 
     public void refreshList(int position) {
-        ArrayList<String> songs = model.getSongs();
+        ArrayList<Song> songs = model.getSongs();
         Nsongs =songs.size();
         if (!first) {
             System.out.print("\033[" + songs.size() + "A");
@@ -47,14 +49,15 @@ public class View implements Observer {
             } else {
                 System.out.print("   ");
             }
-            System.out.println(songs.get(index));
+            System.out.println(songs.get(index).getFileName());
         }
         System.out.print('\r');
     }
     public void displayProgress(String progress) {
         System.out.print("\rProgreso: " + progress + "%"+'\r');
     }
-    public void refreshSong(Song song){
+    public void refreshSong(int position){
+        Song song = model.getSong(position);
         System.out.print("\033[" + Nsongs + "A");
         System.out.println("\r\t\t\t\t\t" + "\033[K" + "Información de la canción:");
         System.out.println("\r\t\t\t\t\t" + "\033[K" + "Título: " + song.getTitle());

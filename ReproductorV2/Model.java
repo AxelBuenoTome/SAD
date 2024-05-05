@@ -1,4 +1,5 @@
 package ReproductorV2;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -9,13 +10,15 @@ import java.util.Observer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.annotation.processing.SupportedOptions;
+
 public class Model extends Observable {
     
     private int position;
     private String filePath;
     private String currentMinute = "00:00:00.00"; //iniciamos a 0
     private String currentSong;
-    private ArrayList<String> songs;
+    private ArrayList<Song> songs;
     // añadimos el Arraylist de observers
     private ArrayList<Observer> observers;
     //creamos el proceso para poder destruirlo
@@ -32,20 +35,33 @@ public class Model extends Observable {
         // añadimos el Arraylist de observers
         observers = new ArrayList<>();
     }
-
+    public Song getSong(int position){
+        return songs.get(position);
+    }
     //miramos la posición en la que estamos y devolvemos el nombre de la canción
     public String getSongName(int position){
-        return songs.get(position);
+        return songs.get(position).getTitle();
+    }
+
+    public String getFileName(int position){
+        return songs.get(position).getFileName();
     }
 
     public int getPosition(){
         return position;
     }
+    //¿?
+    public void setPosition(int pos){
+        position=pos;
+        setChanged();  // Marca el Observable como modificado
+        notifyObservers(new UpdateInfo(KEY.POSSITION, position));  // le pasa la posición 
+    }
+
     //método a priori innecesario
     public String getFilePath(){
         return filePath;
     }
-    public ArrayList<String> getSongs(){
+    public ArrayList<Song> getSongs(){
         return songs;
     }
 
@@ -54,14 +70,12 @@ public class Model extends Observable {
         position = (position - 1 + songs.size()) % songs.size();
             setChanged();  // Marca el Observable como modificado
             notifyObservers(new UpdateInfo(KEY.POSSITION, position));  // le pasa la posición 
-            songInfo();
     }
     //versión inicial del down
     public void down(){
             position = (position + 1) % songs.size();
             setChanged();  // Marca el Observable como modificado
             notifyObservers(new UpdateInfo(KEY.POSSITION, position));  // le pasa la posición 
-            songInfo();
     }
     public void createSongList() {
         File directory = new File(filePath);
@@ -71,11 +85,14 @@ public class Model extends Observable {
                 if (files != null) {
                     for (File file : files) {
                         // Añadimos el nombre de la canción a la lista
-                        songs.add(file.getName());
+                        Song song = songInfo(file.getName());
+                        song.setFileName(file.getName()); 
+                        songs.add(song);
                     }
+                    System.out.print("\033[H\033[2J"); //hace un clear en la pantalla
                     setChanged();  // Marca el Observable como modificado
                     notifyObservers(new UpdateInfo(KEY.POSSITION, position));  // le pasa la posición 
-                    songInfo();
+                    //System.out.println("canciones cargadas correctamente");
                 } else {
                     throw new IOException("El directorio está vacío.");
                 }
@@ -91,17 +108,17 @@ public class Model extends Observable {
             System.err.println(io.getMessage());
         }
     }
-    
+
     public void play() {
         try {
             stopThread();
             if (process!=null){
                 process.destroy();
             }
-            ProcessBuilder pb = new ProcessBuilder("play", filePath + File.separator + getSongName(position));
+            ProcessBuilder pb = new ProcessBuilder("play", filePath + File.separator + getFileName(position));
             pb.redirectErrorStream(true);
             process = pb.start();
-            currentSong = getSongName(position);
+            currentSong = getFileName(position);
             //Creamos el hilo que se encargará de parsear
             parseThread = new Thread(new Runnable() {
                 public void run() {
@@ -193,10 +210,11 @@ public class Model extends Observable {
     }
 
     //hay dos opciones, pasamos linea a linea haciendo un while a parse Song, o creamos un StringBuilder y le pasamos todo de golpe
-    public void songInfo(){
+    public Song songInfo(String songName){
         StringBuilder output = new StringBuilder();
         try {
-            ProcessBuilder pb = new ProcessBuilder("mediainfo", filePath + File.separator + getSongName(position));
+            ProcessBuilder pb = new ProcessBuilder("mediainfo", filePath + File.separator + songName);
+            System.out.println("Cargando info ... \t" + songName );
             pb.redirectErrorStream(true);
             Process infoProcess = pb.start();
             BufferedReader reader = new BufferedReader(new InputStreamReader(infoProcess.getInputStream()));
@@ -204,17 +222,19 @@ public class Model extends Observable {
             while ((line = reader.readLine()) != null){
                 output.append(line).append("\n");
             }
-            parseSong(output.toString());
+            return parseSong(output.toString());
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return null;
     }
 
-    public void parseSong(String output){
-        String title = null, artist = null, album = null, genre = null, duration = null;
+    public Song parseSong(String output){
+        String title = null, artist = null, album = null, genre = null, duration = null, fileName = null;
         int year = 0;
 
         // Patrones regex para capturar información
+        Pattern fileNamePattern = Pattern.compile("Complete name\\s*:\\s*(.+)");
         Pattern titlePattern = Pattern.compile("Track name\\s*:\\s*(.+)");
         Pattern artistPattern = Pattern.compile("Director\\s*:\\s*(.+)");
         Pattern genrePattern = Pattern.compile("Genre\\s*:\\s*(.+)");
@@ -222,8 +242,14 @@ public class Model extends Observable {
         Pattern albumPattern = Pattern.compile("Original source form/Name\\s*:\\s*(.+)");
         Pattern durationPattern = Pattern.compile("Duration\\s*:\\s*(\\d+ min \\d+ s)");
 
+        //Extraer nombre de la canción
+        Matcher matcher = fileNamePattern.matcher(output);
+        if (matcher.find()) {
+            fileName = matcher.group(1);
+        }
+
         // Extraer título
-        Matcher matcher = titlePattern.matcher(output);
+        matcher = titlePattern.matcher(output);
         if (matcher.find()) {
             title = matcher.group(1);
         }
@@ -257,20 +283,14 @@ public class Model extends Observable {
         if (matcher.find()) {
             duration = matcher.group(1);  // Captura la duración como "X min Y s"
         }
-
-        Song song = new Song(title, artist, album, duration, genre, year);
-        setChanged(); 
-        notifyObservers(new UpdateInfo(KEY.SONG, song)); 
-        /*
-        // Imprimir la información de la canción
-        System.out.println("Información de la canción:");
-        System.out.println("Título: " + song.getTitle());
-        System.out.println("Artista: " + song.getArtist());
-        System.out.println("Álbum: " + song.getAlbum());
-        System.out.println("Género: " + song.getGenre());
-        System.out.println("Duración: " + song.getDuration());
-        System.out.println("Año: " + song.getYear());
-        */
+        /*System.out.println("Información de la canción:");
+        System.out.println("Nombre Archivo: " + fileName);
+        System.out.println("Título: " + title);
+        System.out.println("Artista: " + artist);
+        System.out.println("Álbum: " + album);
+        System.out.println("Género: " + genre);
+        System.out.println("Duración: " + duration);
+        System.out.println("Año: " + year);*/
+        return new Song(title, artist, album, duration, genre, year, fileName); 
     }
-
 }
