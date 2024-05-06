@@ -30,6 +30,7 @@ public class View extends BasicWindow implements Observer {
     private final ActionListBox songs;
     private Model model;
     private Label titulo, artista, album, genero, duracion, año;
+    private ProgressBar progressBar;
     private Screen screen; // Campo para almacenar la referencia a Screen
 
     public View(Model model) {
@@ -42,7 +43,7 @@ public class View extends BasicWindow implements Observer {
         songs=new ActionListBox(new TerminalSize(30, 3));
         leftPanel = new Panel(new BorderLayout());
         rightPanel = new Panel(new LinearLayout());
-        controlPanel = new Panel(new LinearLayout(Direction.HORIZONTAL)); 
+        controlPanel = new Panel(new BorderLayout()); 
 
         this.createWidgets();
         this.setupScreen();  // Asegurar que setupScreen se llama aquí
@@ -81,7 +82,11 @@ public class View extends BasicWindow implements Observer {
         pauseButton.addListener((onClick) -> {
             model.pause();  // Suponiendo que tienes un método pause() en tu modelo
         });
-        controlPanel.addComponent(pauseButton);
+        controlPanel.addComponent(pauseButton, BorderLayout.Location.LEFT);
+        progressBar = new ProgressBar();
+        progressBar.setPreferredWidth(30);
+        controlPanel.addComponent(progressBar, BorderLayout.Location.RIGHT);
+
 
         mainPanel.addComponent(leftPanel, BorderLayout.Location.LEFT);
         mainPanel.addComponent(rightPanel, BorderLayout.Location.RIGHT);
@@ -119,14 +124,16 @@ public class View extends BasicWindow implements Observer {
         }
     }
 
+    private void displayProgress(String progress){
+        progressBar.setValue((int) Float.parseFloat(progress));
+    }
+
     @Override
     public void update(Observable o, Object arg) {
         UpdateInfo updateInfo = (UpdateInfo) arg;
         switch (updateInfo.getType()) {
-            case KEY.POSSITION:
-                break;
             case KEY.PROGRESS:
-                //displayProgress((String) updateInfo.getValue());
+                displayProgress((String) updateInfo.getValue());
                 break;
             case KEY.SONG:
                 refreshSong((Song) updateInfo.getValue());
