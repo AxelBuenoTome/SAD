@@ -47,11 +47,13 @@ public class View implements Observer {
                 } else {
                     System.out.print("   ");
                 }
-                System.out.println(songs.get(index).getFileName());
+                System.out.println(songs.get(index).getFileName()+"\033[K");
             }
         }
         if(position == Nsongs-1 && numSongs<Nsongs){
-            System.out.print("\r\033[K\n");
+            for (int k=Nsongs-position; k<numSongs/2;k++){
+                System.out.print("\r\033[K\n");
+            }
         }
         System.out.print('\r');
     }
