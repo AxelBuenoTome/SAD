@@ -10,6 +10,7 @@ public class View implements Observer {
     private Model model;
     private boolean first;
     private int Nsongs;
+    private static int numSongs = 8; //solo funciona con pares
 
     public View(Model model) {
         this.model = model;
@@ -35,17 +36,22 @@ public class View implements Observer {
         ArrayList<Song> songs = model.getSongs();
         Nsongs =songs.size();
         if (!first) {
-            System.out.print("\033[" + songs.size() + "A");
+            System.out.print("\033[" + numSongs + "A");
         }
         first = false;
         for (int index = 0; index < songs.size(); index++) {
-            System.out.print('\r');
-            if (index == position) {
-                System.out.print("-->");
-            } else {
-                System.out.print("   ");
+            if ((index >= (position - numSongs/2) && index < (position + numSongs/2))||(position <= numSongs/2 && index < numSongs)||(numSongs>Nsongs)){
+                System.out.print('\r');
+                if (index == position) {
+                    System.out.print("-->");
+                } else {
+                    System.out.print("   ");
+                }
+                System.out.println(songs.get(index).getFileName());
             }
-            System.out.println(songs.get(index).getFileName());
+        }
+        if(position == Nsongs-1 && numSongs<Nsongs){
+            System.out.print("\r\033[K\n");
         }
         System.out.print('\r');
     }
@@ -78,7 +84,7 @@ public class View implements Observer {
     }
     public void refreshSong(int position){
         Song song = model.getSong(position);
-        System.out.print("\033[" + Nsongs + "A");
+        System.out.print("\033[" + numSongs + "A");
         System.out.println("\r\t\t\t\t\t" + "\033[K" + "Información de la canción:");
         System.out.println("\r\t\t\t\t\t" + "\033[K" + "Título: " + song.getTitle());
         System.out.println("\r\t\t\t\t\t" + "\033[K" + "Artista: " + song.getArtist());
@@ -87,6 +93,6 @@ public class View implements Observer {
         System.out.println("\r\t\t\t\t\t" + "\033[K" + "Duración: " + song.getDuration());
         System.out.println("\r\t\t\t\t\t" + "\033[K" + "Año: " + song.getYear());
         System.out.print("\033[" + 7 + "A");
-        System.out.print("\033[" + Nsongs + "B\r");
+        System.out.print("\033[" + numSongs + "B\r");
     }
 }
