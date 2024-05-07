@@ -34,7 +34,7 @@ public class View extends BasicWindow implements Observer {
     private Screen screen; // Campo para almacenar la referencia a Screen
 
     public View(Model model) {
-        super("EsPoTifai");  // Asignar un título a la ventana
+        super("Reproductor V3");  // Asignar un título a la ventana
         this.model = model;
         model.addObserver(this);
     

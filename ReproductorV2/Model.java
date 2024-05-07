@@ -29,8 +29,8 @@ public class Model extends Observable {
     //constructor de la clase model
     public Model(){
         position = 0;
-        filePath = "/mnt/c/Users/Pepus/OneDrive/Escritorio/SAD/music/";
-        //filePath = "/mnt/c/Users/Axel/OneDrive/Documents/UPC/SAD/canciones";
+        //filePath = "/mnt/c/Users/Pepus/OneDrive/Escritorio/SAD/music/";
+        filePath = "/mnt/c/Users/Axel/OneDrive/Documents/UPC/SAD/canciones";
         songs = new ArrayList<>(); //En el main se llama al controlador, y este al model para crearlo.
         // añadimos el Arraylist de observers
         observers = new ArrayList<>();
@@ -90,6 +90,7 @@ public class Model extends Observable {
                         songs.add(song);
                     }
                     System.out.print("\033[H\033[2J"); //hace un clear en la pantalla
+                    System.out.println("*** Reproductor V2 ***");
                     setChanged();  // Marca el Observable como modificado
                     notifyObservers(new UpdateInfo(KEY.POSSITION, position));  // le pasa la posición 
                     //System.out.println("canciones cargadas correctamente");

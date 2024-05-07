@@ -9,8 +9,8 @@ public class View implements Observer {
 
     private Model model;
     private boolean first;
-    private int Nsongs;
-    private static int numSongs = 8; //solo funciona con pares
+    private int numberOfSongs;
+    private static int numSongs = 9; 
 
     public View(Model model) {
         this.model = model;
@@ -34,28 +34,37 @@ public class View implements Observer {
 
     public void refreshList(int position) {
         ArrayList<Song> songs = model.getSongs();
-        Nsongs =songs.size();
+        numberOfSongs =songs.size();
         if (!first) {
             System.out.print("\033[" + numSongs + "A");
         }
-        first = false;
-        for (int index = 0; index < songs.size(); index++) {
-            if ((index >= (position - numSongs/2) && index < (position + numSongs/2))||(position <= numSongs/2 && index < numSongs)||(numSongs>Nsongs)){
-                System.out.print('\r');
-                if (index == position) {
-                    System.out.print("-->");
-                } else {
-                    System.out.print("   ");
-                }
-                System.out.println(songs.get(index).getFileName()+"\033[K");
-            }
+        first = false;    
+        // Calcula el rango de índices de canciones a mostrar
+        int start = Math.max(0, position - numSongs / 2);
+        int end = Math.min(numberOfSongs, start + numSongs);
+    
+        // Ajusta el inicio si el rango es menor que numSongs y todavía hay espacio por encima
+        if (end - start < numSongs && start > 0) {
+            start = Math.max(0, end - numSongs);
         }
-        if(position == Nsongs-1 && numSongs<Nsongs){
-            for (int k=Nsongs-position; k<numSongs/2;k++){
-                System.out.print("\r\033[K\n");
+    
+        // Imprime cada canción en el rango visible
+        for (int i = start; i < end; i++) {
+            System.out.print("\r"); // Vuelve al comienzo de la línea
+            if (i == position) {
+                System.out.print("   \033[7m"); // Activa el modo de inversión de colores // Marca la canción actual
+            } else {
+                System.out.print("   ");  // Espacios para canciones no seleccionadas
             }
+            System.out.println(songs.get(i).getFileName() + "\033[m" + "\033[K"); // Imprime el nombre de la canción y borra el resto de la línea
         }
-        System.out.print('\r');
+    
+        // Limpia las líneas adicionales si el último grupo es menor que numSongs
+        for (int i = end; i < start + numSongs; i++) {
+            System.out.print("\r\033[K\n"); // Borra la línea
+        }
+    
+        System.out.print("\r"); // Posiciona el cursor al inicio de la línea para la siguiente impresión
     }
     /*public void displayProgress(String progress) {
         System.out.print("\rProgreso: " + progress + "%"+'\r');
