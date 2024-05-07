@@ -22,9 +22,10 @@ public class KEY {
     public static final String LEFT_STR = "\033[D";
 
     //Claves para el tipo de objeto
-    public static final int POSSITION = -10;
+    public static final int POSITION = -10;
     public static final int PROGRESS = -11;
     public static final int SONG = -12;
+    public static final int INIT = -13;
 
 }
 

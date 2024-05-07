@@ -54,7 +54,7 @@ public class Model extends Observable {
     public void setPosition(int pos){
         position=pos;
         setChanged();  // Marca el Observable como modificado
-        notifyObservers(new UpdateInfo(KEY.POSSITION, position));  // le pasa la posición 
+        notifyObservers(new UpdateInfo(KEY.POSITION, position));  // le pasa la posición 
     }
 
     //método a priori innecesario
@@ -69,13 +69,13 @@ public class Model extends Observable {
     public void up(){
         position = (position - 1 + songs.size()) % songs.size();
             setChanged();  // Marca el Observable como modificado
-            notifyObservers(new UpdateInfo(KEY.POSSITION, position));  // le pasa la posición 
+            notifyObservers(new UpdateInfo(KEY.POSITION, position));  // le pasa la posición 
     }
     //versión inicial del down
     public void down(){
             position = (position + 1) % songs.size();
             setChanged();  // Marca el Observable como modificado
-            notifyObservers(new UpdateInfo(KEY.POSSITION, position));  // le pasa la posición 
+            notifyObservers(new UpdateInfo(KEY.POSITION, position));  // le pasa la posición 
     }
     public void createSongList() {
         File directory = new File(filePath);
@@ -89,17 +89,16 @@ public class Model extends Observable {
                         song.setFileName(file.getName()); 
                         songs.add(song);
                     }
-                    System.out.print("\033[H\033[2J"); //hace un clear en la pantalla
-                    System.out.println("*** Reproductor V2 ***");
                     setChanged();  // Marca el Observable como modificado
-                    notifyObservers(new UpdateInfo(KEY.POSSITION, position));  // le pasa la posición 
+                    notifyObservers(new UpdateInfo(KEY.INIT, null));
+                    setChanged();
+                    notifyObservers(new UpdateInfo(KEY.POSITION, position));  // le pasa la posición 
                     //System.out.println("canciones cargadas correctamente");
                 } else {
                     throw new IOException("El directorio está vacío.");
                 }
             } else {
-                // Mensaje importante para Josep
-                throw new IllegalArgumentException("La ruta especificada no es válida, Josep. Debes cambiar el directoryPath.");
+                throw new IllegalArgumentException("La ruta especificada no es válida. Debes cambiar el directoryPath.");
             }
         } catch (IllegalArgumentException ia) {
             // Manejo del error cuando la ruta no es válida
@@ -125,9 +124,7 @@ public class Model extends Observable {
                 public void run() {
                     try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
                         String line;
-                        //while ((line = reader.readLine()) != null) {
                         while (!parseThread.isInterrupted() && (line = reader.readLine()) != null) {
-
                             parseProgress(line);
                         }
                     } catch (IOException e) {
@@ -136,7 +133,6 @@ public class Model extends Observable {
                 }
             });
             parseThread.start();
-
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -147,7 +143,6 @@ public class Model extends Observable {
         Matcher matcher = progressPattern.matcher(line);
         if (matcher.find()) {
             String progressString = matcher.group(1); 
-            //float progress = Float.parseFloat(progressString);
             setChanged(); 
             notifyObservers(new UpdateInfo(KEY.PROGRESS, progressString)); 
             }
@@ -278,32 +273,22 @@ public class Model extends Observable {
         if (matcher.find()) {
             album = matcher.group(1);
         }
-
+        
         // Extraer duración como string
         matcher = durationPattern.matcher(output);
         if (matcher.find()) {
             duration = matcher.group(1);  // Captura la duración como "X min Y s"
         }
-        /*System.out.println("Información de la canción:");
-        System.out.println("Nombre Archivo: " + fileName);
-        System.out.println("Título: " + title);
-        System.out.println("Artista: " + artist);
-        System.out.println("Álbum: " + album);
-        System.out.println("Género: " + genre);
-        System.out.println("Duración: " + duration);
-        System.out.println("Año: " + year);*/
         return new Song(title, artist, album, duration, genre, year, fileName); 
     }
+
     public int countColumns(){
         try {
             Process p = Runtime.getRuntime().exec(new String[] {"/bin/sh", "-c", "tput cols 2>/dev/tty"});
-            BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
-            String line = reader.readLine(); // Lee el resultado
-            return Integer.parseInt(line);
+            return Integer.parseInt(new BufferedReader(new InputStreamReader(p.getInputStream())).readLine());
         } catch (IOException e) {
             e.printStackTrace();
         }
-        //funciona bien, comprobado conSystem.out.println(numColumns);
-        return 50;
+        return 50; //valor estandar
     }
 }

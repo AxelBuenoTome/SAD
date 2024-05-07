@@ -22,14 +22,21 @@ public class View implements Observer {
     public void update(Observable o, Object arg) {
         UpdateInfo updateInfo = (UpdateInfo) arg; //convertimos el objeto a UpdateInfo
         switch (updateInfo.getType()) {
-            case KEY.POSSITION:
+            case KEY.POSITION:
                 refreshList((int) updateInfo.getValue()); 
                 refreshSong((int) updateInfo.getValue());
                 break;
             case KEY.PROGRESS:
                 displayProgress((String) updateInfo.getValue()); //convertimos la información en String
                 break;
+            case KEY.INIT:
+                initInterface();
         }
+    }
+
+    private void initInterface() {
+        System.out.print("\033[H\033[2J"); //hace un clear en la pantalla
+        System.out.println("*** Reproductor V2 ***\n");
     }
 
     public void refreshList(int position) {
@@ -69,6 +76,7 @@ public class View implements Observer {
     /*public void displayProgress(String progress) {
         System.out.print("\rProgreso: " + progress + "%"+'\r');
     }*/
+    
     public void displayProgress(String progress) {
         int totalLength = model.countColumns() - 30; // Longitud dinámica de la barra de de progreso
         float progressPercentage = Float.parseFloat(progress); 
@@ -93,6 +101,7 @@ public class View implements Observer {
     
         System.out.print("\r[" + progressBar + "] " + String.format("%.2f", progressPercentage) + "%" + "\033[K");
     }
+
     public void refreshSong(int position){
         Song song = model.getSong(position);
         System.out.print("\033[" + numSongs + "A");
