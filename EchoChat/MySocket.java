@@ -36,6 +36,7 @@ public class MySocket extends Socket{
         //System.out.println("estamos escribiendo la linea");
         writer.println(message);
     }
+    @Override
     public void close() throws IOException{
         reader.close();
         writer.close();
