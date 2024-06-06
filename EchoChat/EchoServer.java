@@ -2,8 +2,6 @@ package EchoChat;
 
 import java.io.IOException;
 
-import javax.annotation.processing.SupportedOptions;
-
 public class EchoServer {
     public static void main (String [] args) throws IOException{
         MyServerSocket ss = new MyServerSocket(Integer.parseInt(args[0]));
@@ -15,21 +13,22 @@ public class EchoServer {
                     //System.out.println("hemos intentado hacer un Echo");
                     try {
                         while((line=s.readLine())!= null){
-                            System.out.println("\u001B[31m" + "entra aquí el puto ¿?"+ "\u001B[0m"); //COLOR ROJO
+                            System.out.println("Recibido: " + line); //COLOR ROJO
                             s.println(line); //Este es el echo
-                            System.out.println("\u001B[31m" +"Espero que entre aquí también"+ "\u001B[0m" ); //COLOR ROJO
+                            //System.out.println("\u001B[31m" +"Espero que entre aquí también"+ "\u001B[0m" ); //COLOR ROJO
                         }
                     } catch (IOException e) {
                         // TODO Auto-generated catch block
                         e.printStackTrace();
-                        System.out.println("\u001B[31m" +"excepcion de mierda"+ "\u001B[0m"); //COLOR ROJO
+                        System.out.println("\u001B[31m" +"IOException"+ "\u001B[0m"); //COLOR ROJO
                     }
                     try {   
-                        s.close();
-                        System.out.println("\u001B[31m" +"Se ha cerrado el Server¿?"+ "\u001B[0m"); //COLOR ROJO
+                        s.close(); 
+                        System.out.println("\u001B[31m" +"Cerrada conexión"+ "\u001B[0m"); //COLOR ROJO
                     } catch (IOException e) {
                         // TODO Auto-generated catch block
                         e.printStackTrace();
+                        System.out.println("\u001B[31m" +"Error al cerrar conexión"+ "\u001B[0m");
                     }
                 }
             }.start();

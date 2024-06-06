@@ -9,6 +9,7 @@ public class MyServerSocket extends ServerSocket{ //deberíamos no extender?
     //Tenemos el IOException y el IllegalArgumentException
     public MyServerSocket (int port) throws IOException{
         super(port);
+        System.out.println("\u001B[34m" + "Servidor creado correctamente :)"+ "\u001B[0m"); //COLOR AZUL
     }
 
     //aceptar conexiones de clientes, ha de devolver un objeto MyServerSocket, es lo interesante
@@ -21,8 +22,9 @@ public class MyServerSocket extends ServerSocket{ //deberíamos no extender?
             return socket;
         }
         catch(IOException e){//TODO: hay que usar el e
-            return null;
+            e.printStackTrace();
         }
+        return null;
     }
 
     //cierra el servidor

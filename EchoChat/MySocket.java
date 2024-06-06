@@ -17,16 +17,16 @@ public class MySocket extends Socket{
         //Creamos el socket
         super(host, port);
         //streams de lectura y escritura
-        reader = new BufferedReader(new InputStreamReader(System.in)); //creo que este ha de ser Sytem.in pq lee del teclado
-        writer = new PrintWriter(super.getOutputStream()); 
+        reader = new BufferedReader(new InputStreamReader(System.in)); 
+        writer = new PrintWriter(super.getOutputStream(), true); // no tengo claro qué es el autoflush
         System.out.println("\u001B[34m" + "Socket creado correstamente :)"+ "\u001B[0m"); //COLOR AZUL
     }
     
     public MySocket(Socket accept) throws IOException {
         //System.out.println("Se ha aceptado el socket desde mySocket");
         super(accept.getInetAddress(), accept.getPort());
-        reader = new BufferedReader(new InputStreamReader(super.getInputStream())); //este creo que ha de ser así pq espera que escriba el server
-        writer = new PrintWriter(super.getOutputStream());
+        //reader = new BufferedReader(new InputStreamReader(super.getInputStream())); //este creo que ha de ser así pq espera que escriba el server
+        //writer = new PrintWriter(super.getOutputStream(), true);
     }
     public String readLine() throws IOException{
         System.out.println("\u001B[34m" + "Se esta leyendo la linea " + "\u001B[0m"); //COLOR AZUL
