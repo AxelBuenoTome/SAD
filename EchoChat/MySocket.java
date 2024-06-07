@@ -5,41 +5,41 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.Scanner;
 
-public class MySocket extends Socket{
+public class MySocket {
+    private Socket socket;
     private BufferedReader reader;
     private PrintWriter writer;
 
-    //throws UnknownHostException, IOException
-    //https://docs.oracle.com/javase/8/docs/api/java/net/Socket.html#Socket--
-    public MySocket(String host, int port) throws IOException{ 
-        //Creamos el socket
-        super(host, port);
-        //streams de lectura y escritura
-        reader = new BufferedReader(new InputStreamReader(System.in)); 
-        writer = new PrintWriter(super.getOutputStream(), true); // no tengo claro qué es el autoflush
-        System.out.println("\u001B[34m" + "Socket creado correstamente :)"+ "\u001B[0m"); //COLOR AZUL
+    public MySocket(String host, int port) throws IOException {
+        this.socket = new Socket(host, port);
+        initializeStreams();
     }
-    
-    public MySocket(Socket accept) throws IOException {
-        //System.out.println("Se ha aceptado el socket desde mySocket");
-        super(accept.getInetAddress(), accept.getPort());
-        //reader = new BufferedReader(new InputStreamReader(super.getInputStream())); //este creo que ha de ser así pq espera que escriba el server
-        //writer = new PrintWriter(super.getOutputStream(), true);
+
+    public MySocket(Socket socket) throws IOException {
+        this.socket = socket;
+        initializeStreams();
     }
-    public String readLine() throws IOException{
-        System.out.println("\u001B[34m" + "Se esta leyendo la linea " + "\u001B[0m"); //COLOR AZUL
+
+    private void initializeStreams() throws IOException {
+        this.reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        this.writer = new PrintWriter(socket.getOutputStream(), true);
+        System.out.println("\u001B[34m" + "Socket creado correctamente :)" + "\u001B[0m"); // COLOR AZUL
+    }
+
+    public String readLine() throws IOException {
+        //System.out.println("\u001B[34m" + "Se está leyendo la línea " + "\u001B[0m"); // COLOR AZUL
         return reader.readLine();
     }
-    public void println(String message){
-        //System.out.println("estamos escribiendo la linea");
+
+    public void println(String message) {
         writer.println(message);
     }
-    @Override
-    public void close() throws IOException{
+
+    public void close() throws IOException {
         reader.close();
         writer.close();
-        super.close();
+        socket.close();
+        System.out.println("\u001B[34m" + "Socket cerrado correctamente" + "\u001B[0m"); // COLOR AZUL
     }
 }

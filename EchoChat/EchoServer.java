@@ -10,10 +10,9 @@ public class EchoServer {
             new Thread(){
                 public void run(){
                     String line;
-                    //System.out.println("hemos intentado hacer un Echo");
                     try {
                         while((line=s.readLine())!= null){
-                            System.out.println("Recibido: " + line); //COLOR ROJO
+                            System.out.println("Recibido: " + line);
                             s.println(line); //Este es el echo
                             //System.out.println("\u001B[31m" +"Espero que entre aquí también"+ "\u001B[0m" ); //COLOR ROJO
                         }
