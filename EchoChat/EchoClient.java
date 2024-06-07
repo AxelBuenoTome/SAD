@@ -7,16 +7,14 @@ import java.io.InputStreamReader;
 public class EchoClient {
     public static void main(String[] args) throws IOException {
         MySocket s = new MySocket(args[0], Integer.parseInt(args[1]));
-        
+
         // INPUT THREAD
-        new Thread(){
-            public void run(){
+        new Thread() {
+            public void run() {
                 String line;
-                try {
-                    BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
+                try (BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in))) {
                     while ((line = stdIn.readLine()) != null) {
                         s.println(line);
-                        //System.out.println("\u001B[35m" + "estamos intentando mandar un Echo" + "\u001B[0m"); // COLOR MAGENTA
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -30,10 +28,10 @@ public class EchoClient {
                 }
             }
         }.start();
-        
+
         // OUTPUT THREAD
         new Thread() {
-            public void run(){
+            public void run() {
                 String line;
                 try {
                     while ((line = s.readLine()) != null) {
