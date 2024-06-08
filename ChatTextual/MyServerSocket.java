@@ -2,39 +2,23 @@ package ChatTextual;
 
 import java.io.IOException;
 import java.net.ServerSocket;
+import java.net.Socket;
 
-public class MyServerSocket extends ServerSocket{
-    
+public class MyServerSocket {
     private ServerSocket serverSocket;
-    private MySocket socket;
-    
-    //Tenemos el IOException y el IllegalArgumentException
-    public MyServerSocket (int port) throws IOException{
-        serverSocket = new ServerSocket(port);
+
+    public MyServerSocket(int port) throws IOException {
+        this.serverSocket = new ServerSocket(port);
     }
 
-    //aceptar conexiones de clientes
-    //IOException y SocketTimeoutException
-    @Override
-    public MySocket accept() throws IOException{
-        try{
-            socket = new MySocket(serverSocket.accept());
-            return socket;
-        }
-        catch(IOException e){//TODO: hay que usar el e
-            return null;
-        }
+    public MySocket accept() throws IOException {
+        Socket socket = serverSocket.accept();
+        System.out.println("\u001B[33m" + "Hemos aceptado el Socket correctamente" + "\u001B[0m"); // COLOR AMARILLO
+        return new MySocket(socket);
     }
 
-    //cierra el servidor
-    @Override
-    public void close() throws IOException{
-        try{
-            serverSocket.close();
-        }
-        catch(IOException e){//TODO: hay que usar el e
-        }
-
+    public void close() throws IOException {
+        serverSocket.close();
+        System.out.println("\u001B[33m" + "Se ha cerrado el servidor" + "\u001B[0m"); // COLOR AMARILLO
     }
 }
-
